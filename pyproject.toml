@@ -1,0 +1,38 @@
+[project]
+name = "bioportal-term-mcp"
+version = "0.1.0"
+description = "MCP server that resolves free-text descriptions of BioPortal ontologies, classes, and value sets into the IRI/acronym/name tuples needed by the CEDAR artifact library's controlled-term-field builders."
+readme = "README.md"
+license = "Apache-2.0"
+authors = [
+    { name = "martinjoconnor", email = "martin@zippyrate.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "httpx>=0.28.1",
+    "mcp[cli]>=1.27.1",
+]
+
+[project.scripts]
+bioportal-term-mcp = "bioportal_term_mcp:main"
+
+[build-system]
+requires = ["uv_build>=0.11.15,<0.12.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pyright>=1.1.409",
+    "pytest>=9.0.3",
+    "pytest-asyncio>=1.3.0",
+    "respx>=0.23.1",
+]
+
+[tool.pytest.ini_options]
+# Tests marked `live` actually hit the BioPortal API. They're skipped by default;
+# run them with: uv run pytest -m live
+markers = [
+    "live: integration tests that call the real BioPortal API (requires BIOPORTAL_API_KEY)",
+]
+addopts = "-m 'not live'"
+testpaths = ["tests"]

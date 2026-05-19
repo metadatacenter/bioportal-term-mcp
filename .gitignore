@@ -1,0 +1,107 @@
+# ============================================================
+# Secrets — anything that might contain API keys, tokens, credentials.
+# DO NOT remove entries from this section without a security review.
+# ============================================================
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*.pfx
+*.cer
+*.crt
+secrets.*
+credentials.*
+.envrc
+.netrc
+
+# ============================================================
+# Python — build / packaging output
+# ============================================================
+__pycache__/
+*.py[cod]
+*$py.class
+build/
+dist/
+wheels/
+*.egg-info/
+*.egg
+pip-wheel-metadata/
+share/python-wheels/
+MANIFEST
+
+# ============================================================
+# Virtual environments — never check in
+# ============================================================
+.venv/
+venv/
+env/
+ENV/
+.python-version-local
+
+# ============================================================
+# Test / lint / type-check caches and reports
+# ============================================================
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.pyright/
+.tox/
+.nox/
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+.cache/
+
+# ============================================================
+# IDE / editor scratch files
+# ============================================================
+# IntelliJ / PyCharm
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+\#*\#
+.\#*
+
+# ============================================================
+# OS-specific clutter
+# ============================================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+.directory
+.Trash-*
+
+# ============================================================
+# Miscellaneous
+# ============================================================
+*.log
+*.bak
+*.tmp
+.local/
