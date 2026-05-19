@@ -17,8 +17,8 @@ Six tools, each mapping to a piece of the CEDAR controlled-term-field API:
 | Tool | Fills builder method | Status |
 |---|---|---|
 | `get_ontology(acronym)` | `withOntologyValueConstraint(uri, acronym, name)` | implemented |
+| `get_class(class_iri, ontology_acronym)` | `withClassValueConstraint(...)` / `withBranchValueConstraint(...)` | implemented |
 | `find_ontology(query)` | (free-text variant of `get_ontology`) | planned |
-| `get_class(class_iri, ontology_acronym)` | `withClassValueConstraint(...)` / `withBranchValueConstraint(...)` | planned |
 | `find_class(query, ontology_acronym?)` | (free-text variant of `get_class`) | planned |
 | `get_value_set(value_set_iri)` | `withValueSetValueConstraint(...)` | planned |
 | `find_value_set(query)` | (free-text variant of `get_value_set`) | planned |

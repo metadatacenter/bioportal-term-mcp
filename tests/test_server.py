@@ -21,8 +21,11 @@ import respx
 from httpx import Response
 
 from bioportal_term_mcp.server import (
+    ClassTuple,
     OntologyTuple,
+    _first_label_string,
     _require_nonblank,
+    get_class,
     get_ontology,
     ping,
 )
@@ -190,6 +193,190 @@ class TestGetOntologyErrors:
 
 
 # ---------------------------------------------------------------------------
+# _first_label_string helper
+# ---------------------------------------------------------------------------
+
+
+class TestFirstLabelString:
+    def test_returns_string_value_as_is(self):
+        assert _first_label_string("disease") == "disease"
+
+    def test_returns_first_item_of_list(self):
+        assert _first_label_string(["disease", "illness"]) == "disease"
+
+    def test_skips_empty_strings_in_list(self):
+        assert _first_label_string(["", "  ", "real value"]) == "real value"
+
+    @pytest.mark.parametrize("empty", [None, "", "  ", [], [""], ["  "]])
+    def test_returns_none_for_empty_or_missing(self, empty):
+        assert _first_label_string(empty) is None
+
+    def test_returns_none_for_unexpected_types(self):
+        assert _first_label_string(42) is None
+        assert _first_label_string({"label": "x"}) is None
+
+
+# ---------------------------------------------------------------------------
+# get_class — mocked HTTP
+# ---------------------------------------------------------------------------
+
+
+# Test fixture: a realistic DOID class IRI + the encoded form used in the URL path.
+DOID_DISEASE_IRI = "http://purl.obolibrary.org/obo/DOID_4"
+DOID_DISEASE_IRI_ENCODED = (
+    "http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_4"
+)
+
+
+class TestGetClassHappyPath:
+    @respx.mock
+    def test_returns_canonical_tuple(self, api_key: None):
+        respx.get(
+            f"https://data.bioontology.org/ontologies/DOID/classes/{DOID_DISEASE_IRI_ENCODED}"
+        ).mock(
+            return_value=Response(
+                200,
+                json={
+                    "@id": DOID_DISEASE_IRI,
+                    "prefLabel": "disease",
+                    "label": ["disease"],
+                },
+            )
+        )
+        respx.get("https://data.bioontology.org/ontologies/DOID").mock(
+            return_value=Response(
+                200,
+                json={
+                    "@id": "https://data.bioontology.org/ontologies/DOID",
+                    "acronym": "DOID",
+                    "name": "Human Disease Ontology",
+                },
+            )
+        )
+
+        result = get_class(DOID_DISEASE_IRI, "DOID")
+
+        assert isinstance(result, ClassTuple)
+        assert result.class_iri == DOID_DISEASE_IRI
+        assert result.pref_label == "disease"
+        assert result.label == "disease"
+        assert result.ontology_acronym == "DOID"
+        assert result.ontology_name == "Human Disease Ontology"
+
+    @respx.mock
+    def test_url_encodes_class_iri_correctly(self, api_key: None):
+        # The IRI contains `:` and `/` which must be percent-encoded in the URL path,
+        # otherwise BioPortal interprets the slashes as path delimiters and 404s.
+        class_route = respx.get(
+            f"https://data.bioontology.org/ontologies/DOID/classes/{DOID_DISEASE_IRI_ENCODED}"
+        ).mock(
+            return_value=Response(
+                200,
+                json={"@id": DOID_DISEASE_IRI, "prefLabel": "disease"},
+            )
+        )
+        respx.get("https://data.bioontology.org/ontologies/DOID").mock(
+            return_value=Response(
+                200, json={"@id": "...", "acronym": "DOID", "name": "Human Disease Ontology"}
+            )
+        )
+
+        get_class(DOID_DISEASE_IRI, "DOID")
+
+        assert class_route.called
+
+    @respx.mock
+    def test_label_falls_back_to_pref_label_when_absent(self, api_key: None):
+        # BioPortal sometimes omits rdfs:label entirely. The tool must still return a
+        # usable `label` field so the CEDAR builder doesn't end up with None.
+        respx.get(
+            f"https://data.bioontology.org/ontologies/DOID/classes/{DOID_DISEASE_IRI_ENCODED}"
+        ).mock(
+            return_value=Response(
+                200,
+                json={"@id": DOID_DISEASE_IRI, "prefLabel": "disease"},  # no "label" key
+            )
+        )
+        respx.get("https://data.bioontology.org/ontologies/DOID").mock(
+            return_value=Response(
+                200, json={"@id": "...", "acronym": "DOID", "name": "Human Disease Ontology"}
+            )
+        )
+
+        result = get_class(DOID_DISEASE_IRI, "DOID")
+
+        assert result.pref_label == "disease"
+        assert result.label == "disease"  # fell back to prefLabel
+
+    @respx.mock
+    def test_label_as_string_is_handled(self, api_key: None):
+        # Some BioPortal responses return `label` as a single string rather than a list.
+        respx.get(
+            f"https://data.bioontology.org/ontologies/DOID/classes/{DOID_DISEASE_IRI_ENCODED}"
+        ).mock(
+            return_value=Response(
+                200,
+                json={
+                    "@id": DOID_DISEASE_IRI,
+                    "prefLabel": "disease",
+                    "label": "disease (string-form)",
+                },
+            )
+        )
+        respx.get("https://data.bioontology.org/ontologies/DOID").mock(
+            return_value=Response(
+                200, json={"@id": "...", "acronym": "DOID", "name": "Human Disease Ontology"}
+            )
+        )
+
+        result = get_class(DOID_DISEASE_IRI, "DOID")
+
+        assert result.label == "disease (string-form)"
+
+
+class TestGetClassValidation:
+    @pytest.mark.parametrize("bad", ["", "   ", "\t"])
+    def test_rejects_empty_class_iri(self, api_key: None, bad: str):
+        with pytest.raises(ValueError, match="class_iri must be a non-empty"):
+            get_class(bad, "DOID")
+
+    @pytest.mark.parametrize("bad", ["", "   ", "\t"])
+    def test_rejects_empty_ontology_acronym(self, api_key: None, bad: str):
+        with pytest.raises(ValueError, match="ontology_acronym must be a non-empty"):
+            get_class(DOID_DISEASE_IRI, bad)
+
+
+class TestGetClassErrors:
+    @respx.mock
+    def test_class_404_surfaces_as_http_status_error(self, api_key: None):
+        respx.get(
+            f"https://data.bioontology.org/ontologies/DOID/classes/{DOID_DISEASE_IRI_ENCODED}"
+        ).mock(return_value=Response(404, json={"error": "not found"}))
+
+        with pytest.raises(httpx.HTTPStatusError) as exc_info:
+            get_class(DOID_DISEASE_IRI, "DOID")
+
+        assert exc_info.value.response.status_code == 404
+
+    @respx.mock
+    def test_ontology_404_surfaces_as_http_status_error(self, api_key: None):
+        # Class call succeeds, ontology call fails — exercises the second-call path.
+        respx.get(
+            f"https://data.bioontology.org/ontologies/DOID/classes/{DOID_DISEASE_IRI_ENCODED}"
+        ).mock(
+            return_value=Response(200, json={"@id": DOID_DISEASE_IRI, "prefLabel": "disease"})
+        )
+        respx.get("https://data.bioontology.org/ontologies/DOID").mock(
+            return_value=Response(404, json={"error": "not found"})
+        )
+
+        with pytest.raises(httpx.HTTPStatusError) as exc_info:
+            get_class(DOID_DISEASE_IRI, "DOID")
+
+        assert exc_info.value.response.status_code == 404
+
+
+# ---------------------------------------------------------------------------
 # Live tests — opt-in
 #
 # Run with:    uv run pytest -m live
@@ -209,3 +396,19 @@ class TestGetOntologyLive:
         assert result.acronym == "DOID"
         assert "Disease" in result.name
         assert result.ontology_iri.startswith("https://data.bioontology.org/ontologies/")
+
+
+@pytest.mark.live
+class TestGetClassLive:
+    def test_doid_disease_class_resolves(self):
+        if not os.environ.get("BIOPORTAL_API_KEY"):
+            pytest.skip("BIOPORTAL_API_KEY not set; skipping live test.")
+
+        result = get_class("http://purl.obolibrary.org/obo/DOID_4", "DOID")
+
+        assert result.class_iri == "http://purl.obolibrary.org/obo/DOID_4"
+        assert result.ontology_acronym == "DOID"
+        assert "Disease" in result.ontology_name
+        # Both label and prefLabel should be populated and non-empty.
+        assert result.pref_label
+        assert result.label

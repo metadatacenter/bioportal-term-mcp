@@ -14,6 +14,7 @@ Six tools planned, mapped to what the four CEDAR constraint builders need:
 from __future__ import annotations
 
 import os
+import urllib.parse
 
 import httpx
 from mcp.server.fastmcp import FastMCP
@@ -104,6 +105,90 @@ def get_ontology(acronym: str) -> OntologyTuple:
         acronym=payload["acronym"],
         name=payload["name"],
         ontology_iri=payload["@id"],
+    )
+
+
+# ---------------------------------------------------------------------------
+# Tool: get_class
+#
+# Maps a known class IRI within a known ontology to the 5-tuple needed by
+# both `withClassValueConstraint(uri, source, label, prefLabel, type)` and
+# `withBranchValueConstraint(uri, source, acronym, name, maxDepth)`. The
+# `type` (ValueType enum) and `maxDepth` arguments are caller-supplied and
+# not derivable from BioPortal.
+# ---------------------------------------------------------------------------
+
+
+class ClassTuple(BaseModel):
+    """The fields needed by `withClassValueConstraint` and `withBranchValueConstraint`.
+
+    The CEDAR builders take additional caller-supplied arguments not present here:
+    `ValueType` (for `withClassValueConstraint`) and `maxDepth` (for
+    `withBranchValueConstraint`). Both are user-intent fields, not BioPortal data.
+    """
+
+    class_iri: str = Field(description="Canonical IRI for the class.")
+    pref_label: str = Field(description="skos:prefLabel for the class.")
+    label: str = Field(
+        description="rdfs:label for the class, or the prefLabel if no separate label exists."
+    )
+    ontology_acronym: str = Field(description="Acronym of the containing ontology, e.g. 'DOID'.")
+    ontology_name: str = Field(
+        description="Human-readable name of the containing ontology, e.g. 'Human Disease Ontology'."
+    )
+
+
+def _first_label_string(raw: object) -> str | None:
+    """Coerces BioPortal's polymorphic label field into a single string, or None.
+
+    BioPortal returns rdfs:label either as a single string, a list of strings, or
+    absent. This normalizes all three cases.
+    """
+    if isinstance(raw, str) and raw.strip():
+        return raw
+    if isinstance(raw, list):
+        for item in raw:
+            if isinstance(item, str) and item.strip():
+                return item
+    return None
+
+
+@mcp.tool()
+def get_class(class_iri: str, ontology_acronym: str) -> ClassTuple:
+    """Resolves a class IRI within a BioPortal ontology to the 5-tuple needed by CEDAR.
+
+    The returned tuple fills (uri, source=ontology_name, label, prefLabel, ...) for
+    `withClassValueConstraint`, and (uri, source=ontology_name, acronym, name=prefLabel, ...)
+    for `withBranchValueConstraint`. Two arguments those builders accept are NOT in this
+    tuple because they're user-intent fields:
+
+      - `ValueType` enum (e.g. ONTOLOGY_CLASS) for class constraints
+      - `maxDepth` integer for branch constraints
+
+    Use this when the caller already knows the class IRI (e.g. 'http://purl.obolibrary.org/obo/DOID_4').
+    For free-text lookup (e.g. 'Disease in DOID'), use `find_class` instead.
+
+    Two HTTP calls happen: one to the class endpoint, one to the ontology endpoint to
+    fetch the ontology's display name. Raises an error if either lookup fails.
+    """
+    class_iri = _require_nonblank(class_iri, "class_iri")
+    ontology_acronym = _require_nonblank(ontology_acronym, "ontology_acronym")
+
+    # BioPortal class endpoint: /ontologies/{acronym}/classes/{double-url-encoded-iri}.
+    # `safe=''` forces encoding of `:` and `/` which are normally path delimiters.
+    encoded_iri = urllib.parse.quote(class_iri, safe="")
+    class_payload = _bioportal_get(f"/ontologies/{ontology_acronym}/classes/{encoded_iri}")
+    ontology_payload = _bioportal_get(f"/ontologies/{ontology_acronym}")
+
+    pref_label = class_payload.get("prefLabel") or class_payload["@id"]
+    label = _first_label_string(class_payload.get("label")) or pref_label
+
+    return ClassTuple(
+        class_iri=class_payload["@id"],
+        pref_label=pref_label,
+        label=label,
+        ontology_acronym=ontology_payload["acronym"],
+        ontology_name=ontology_payload["name"],
     )
 
 
