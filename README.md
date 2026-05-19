@@ -103,4 +103,4 @@ call time with a clear message.
 
 ## License
 
-Apache 2.0. See [LICENSE](./LICENSE).
+BSD-2-Clause. See [license.txt](./license.txt).

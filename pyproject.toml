@@ -3,7 +3,8 @@ name = "bioportal-term-mcp"
 version = "0.1.0"
 description = "MCP server that resolves free-text descriptions of BioPortal ontologies, classes, and value sets into the IRI/acronym/name tuples needed by the CEDAR artifact library's controlled-term-field builders."
 readme = "README.md"
-license = "Apache-2.0"
+license = "BSD-2-Clause"
+license-files = ["license.txt"]
 authors = [
     { name = "martinjoconnor", email = "martin@zippyrate.com" }
 ]
