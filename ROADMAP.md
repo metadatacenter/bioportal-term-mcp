@@ -13,23 +13,20 @@ Implementation status as of writing:
 | `get_ontology(acronym)` | `withOntologyValueConstraint(uri, acronym, name)` | done |
 | `get_class(class_iri, ontology_acronym)` | `withClassValueConstraint(...)` / `withBranchValueConstraint(...)` | done |
 | `get_value_set(value_set_iri, vs_collection)` | `withValueSetValueConstraint(...)` | done |
-| `find_class(query, ontology_acronym?)` | (free-text variant of `get_class`) | next |
-| `find_ontology(query)` | (free-text variant of `get_ontology`) | planned |
+| `find_class(query, ontology_acronym?)` | (free-text variant of `get_class`) | done |
+| `find_ontology(query)` | (free-text variant of `get_ontology`) | next |
 | `find_value_set(query)` | (free-text variant of `get_value_set`) | planned |
 
 Plus `ping(message)` for diagnostics.
 
 ## Build order, with rationale
 
-The get-by-IRI trio (`get_ontology`, `get_class`, `get_value_set`) is complete. Remaining
-work is the three `find_*` tools, which share a new return shape (ranked list of candidates).
+Four of six tools done. The search-shape pattern is established by `find_class`. Two
+remaining `find_*` tools are pattern-replicas.
 
-1. **`find_class`** — first search-shaped tool. Introduces the list-of-ranked-candidates
-   return pattern that the other `find_*` tools will mirror. Highest practical value
-   because real users rarely know class IRIs but know names.
-2. **`find_ontology`** — same search shape, simpler surface (no ontology-scope param).
-   Pattern-replica of `find_class`.
-3. **`find_value_set`** — same search shape, third resource type. Pattern-replica.
+1. **`find_ontology`** — simpler surface (no ontology-scope param). Pattern-replica of
+   `find_class`.
+2. **`find_value_set`** — search across value-set collection ontologies. Pattern-replica.
 
 After all six exist, polish becomes worth doing systematically: add an HTTP cache layer
 in `_bioportal_get` (TTL ~5 min), add an `_require_iri` validator for IRI-input tools,

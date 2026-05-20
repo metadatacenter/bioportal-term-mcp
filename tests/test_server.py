@@ -21,11 +21,14 @@ import respx
 from httpx import Response
 
 from bioportal_term_mcp.server import (
+    ClassSearchHit,
     ClassTuple,
     OntologyTuple,
     ValueSetTuple,
+    _extract_acronym_from_ontology_link,
     _first_label_string,
     _require_nonblank,
+    find_class,
     get_class,
     get_ontology,
     get_value_set,
@@ -379,6 +382,218 @@ class TestGetClassErrors:
 
 
 # ---------------------------------------------------------------------------
+# _extract_acronym_from_ontology_link helper
+# ---------------------------------------------------------------------------
+
+
+class TestExtractAcronymFromOntologyLink:
+    def test_extracts_acronym_from_standard_url(self):
+        assert (
+            _extract_acronym_from_ontology_link(
+                "https://data.bioontology.org/ontologies/DOID"
+            )
+            == "DOID"
+        )
+
+    def test_strips_trailing_slash(self):
+        assert (
+            _extract_acronym_from_ontology_link(
+                "https://data.bioontology.org/ontologies/NCIT/"
+            )
+            == "NCIT"
+        )
+
+    def test_returns_empty_for_empty_input(self):
+        assert _extract_acronym_from_ontology_link("") == ""
+
+
+# ---------------------------------------------------------------------------
+# find_class — mocked HTTP
+# ---------------------------------------------------------------------------
+
+
+def _search_response_with_hits(hits: list[dict]) -> dict:
+    """Builds a minimal BioPortal /search response payload around a list of hit dicts."""
+    return {
+        "page": 1,
+        "pageCount": 1,
+        "totalCount": len(hits),
+        "links": {},
+        "prevPage": None,
+        "nextPage": None,
+        "collection": hits,
+    }
+
+
+class TestFindClassHappyPath:
+    @respx.mock
+    def test_returns_list_of_hits_with_inlined_ontology_metadata(self, api_key: None):
+        respx.get("https://data.bioontology.org/search").mock(
+            return_value=Response(
+                200,
+                json=_search_response_with_hits(
+                    [
+                        {
+                            "@id": "http://purl.obolibrary.org/obo/DOID_4",
+                            "prefLabel": "disease",
+                            "label": ["disease"],
+                            "ontology": {
+                                "@id": "https://data.bioontology.org/ontologies/DOID",
+                                "acronym": "DOID",
+                                "name": "Human Disease Ontology",
+                            },
+                        },
+                        {
+                            "@id": "http://purl.obolibrary.org/obo/MONDO_0700096",
+                            "prefLabel": "human disease",
+                            "ontology": {
+                                "@id": "https://data.bioontology.org/ontologies/MONDO",
+                                "acronym": "MONDO",
+                                "name": "Mondo Disease Ontology",
+                            },
+                        },
+                    ]
+                ),
+            )
+        )
+
+        results = find_class("disease")
+
+        assert len(results) == 2
+        assert all(isinstance(hit, ClassSearchHit) for hit in results)
+        assert results[0].class_iri == "http://purl.obolibrary.org/obo/DOID_4"
+        assert results[0].pref_label == "disease"
+        assert results[0].ontology_acronym == "DOID"
+        assert results[0].ontology_name == "Human Disease Ontology"
+        assert results[1].ontology_acronym == "MONDO"
+
+    @respx.mock
+    def test_falls_back_to_link_extraction_when_ontology_metadata_absent(
+        self, api_key: None
+    ):
+        # BioPortal sometimes omits the inline `ontology` object and provides only the link.
+        respx.get("https://data.bioontology.org/search").mock(
+            return_value=Response(
+                200,
+                json=_search_response_with_hits(
+                    [
+                        {
+                            "@id": "http://purl.obolibrary.org/obo/DOID_4",
+                            "prefLabel": "disease",
+                            "links": {
+                                "ontology": "https://data.bioontology.org/ontologies/DOID"
+                            },
+                        }
+                    ]
+                ),
+            )
+        )
+
+        results = find_class("disease")
+
+        assert len(results) == 1
+        assert results[0].ontology_acronym == "DOID"
+        assert results[0].ontology_name is None  # not inlined; LLM can fetch separately
+
+    @respx.mock
+    def test_scopes_to_ontology_when_acronym_provided(self, api_key: None):
+        route = respx.get("https://data.bioontology.org/search").mock(
+            return_value=Response(200, json=_search_response_with_hits([]))
+        )
+
+        find_class("disease", ontology_acronym="DOID")
+
+        # The `ontologies` query param should have been set to "DOID".
+        sent_url = str(route.calls.last.request.url)
+        assert "ontologies=DOID" in sent_url
+
+    @respx.mock
+    def test_omits_ontology_scope_when_acronym_is_none(self, api_key: None):
+        route = respx.get("https://data.bioontology.org/search").mock(
+            return_value=Response(200, json=_search_response_with_hits([]))
+        )
+
+        find_class("disease")
+
+        sent_url = str(route.calls.last.request.url)
+        assert "ontologies=" not in sent_url
+
+    @respx.mock
+    def test_max_results_sets_pagesize_query_param(self, api_key: None):
+        route = respx.get("https://data.bioontology.org/search").mock(
+            return_value=Response(200, json=_search_response_with_hits([]))
+        )
+
+        find_class("disease", max_results=10)
+
+        sent_url = str(route.calls.last.request.url)
+        assert "pagesize=10" in sent_url
+
+    @respx.mock
+    def test_max_results_caps_at_50(self, api_key: None):
+        # Defensive: even if the caller asks for 10000, we send at most 50 to BioPortal.
+        route = respx.get("https://data.bioontology.org/search").mock(
+            return_value=Response(200, json=_search_response_with_hits([]))
+        )
+
+        find_class("disease", max_results=10000)
+
+        sent_url = str(route.calls.last.request.url)
+        assert "pagesize=50" in sent_url
+
+    @respx.mock
+    def test_max_results_floors_at_1(self, api_key: None):
+        # Defensive: negative or zero results should clamp to 1, not produce a bad URL.
+        route = respx.get("https://data.bioontology.org/search").mock(
+            return_value=Response(200, json=_search_response_with_hits([]))
+        )
+
+        find_class("disease", max_results=0)
+
+        sent_url = str(route.calls.last.request.url)
+        assert "pagesize=1" in sent_url
+
+    @respx.mock
+    def test_empty_search_results_return_empty_list(self, api_key: None):
+        # BioPortal returns a well-formed empty collection for no-match queries.
+        # Empty list is the correct shape — not an error.
+        respx.get("https://data.bioontology.org/search").mock(
+            return_value=Response(200, json=_search_response_with_hits([]))
+        )
+
+        results = find_class("xyzabc-no-match")
+
+        assert results == []
+
+
+class TestFindClassValidation:
+    @pytest.mark.parametrize("bad", ["", "   ", "\t"])
+    def test_rejects_empty_query(self, api_key: None, bad: str):
+        with pytest.raises(ValueError, match="query must be a non-empty"):
+            find_class(bad)
+
+    @pytest.mark.parametrize("bad", ["", "   ", "\t"])
+    def test_rejects_blank_ontology_acronym_when_provided(self, api_key: None, bad: str):
+        # `ontology_acronym=None` means "search everywhere" (valid). An empty *string* on
+        # the other hand is a caller bug and should be rejected.
+        with pytest.raises(ValueError, match="ontology_acronym must be a non-empty"):
+            find_class("disease", ontology_acronym=bad)
+
+
+class TestFindClassErrors:
+    @respx.mock
+    def test_5xx_from_search_endpoint_surfaces(self, api_key: None):
+        respx.get("https://data.bioontology.org/search").mock(
+            return_value=Response(503)
+        )
+
+        with pytest.raises(httpx.HTTPStatusError) as exc_info:
+            find_class("disease")
+
+        assert exc_info.value.response.status_code == 503
+
+
+# ---------------------------------------------------------------------------
 # get_value_set — mocked HTTP
 # ---------------------------------------------------------------------------
 
@@ -544,3 +759,30 @@ class TestGetValueSetLive:
         assert result.value_set_iri == "https://purl.humanatlas.io/vocab/hravs#HRAVS_1000161"
         assert result.vs_collection == "HRAVS"
         assert result.name  # whatever BioPortal returns, it should be non-empty
+
+
+@pytest.mark.live
+class TestFindClassLive:
+    def test_search_for_disease_in_doid_finds_doid_4(self):
+        if not os.environ.get("BIOPORTAL_API_KEY"):
+            pytest.skip("BIOPORTAL_API_KEY not set; skipping live test.")
+
+        results = find_class("disease", ontology_acronym="DOID", max_results=10)
+
+        # Sanity checks: should get some results, all should carry DOID acronym.
+        assert len(results) > 0
+        assert all(hit.ontology_acronym == "DOID" for hit in results)
+        # The literal "disease" class (DOID_4) should be among the top results for this query.
+        iris = [hit.class_iri for hit in results]
+        assert "http://purl.obolibrary.org/obo/DOID_4" in iris
+
+    def test_unscoped_search_returns_hits_from_multiple_ontologies(self):
+        if not os.environ.get("BIOPORTAL_API_KEY"):
+            pytest.skip("BIOPORTAL_API_KEY not set; skipping live test.")
+
+        results = find_class("melanoma", max_results=20)
+
+        assert len(results) > 0
+        # Without scope, we expect hits from at least two ontologies in the top 20.
+        acronyms = {hit.ontology_acronym for hit in results if hit.ontology_acronym}
+        assert len(acronyms) >= 2

@@ -193,6 +193,113 @@ def get_class(class_iri: str, ontology_acronym: str) -> ClassTuple:
 
 
 # ---------------------------------------------------------------------------
+# Tool: find_class
+#
+# Free-text search for classes across BioPortal, optionally scoped to one
+# ontology. Returns a ranked list of candidates rather than a single tuple;
+# the orchestrating LLM picks the right one and may follow up with
+# get_class() to canonicalize.
+# ---------------------------------------------------------------------------
+
+
+class ClassSearchHit(BaseModel):
+    """One candidate result from a class search.
+
+    Lighter than `ClassTuple` because search responses don't always inline the
+    full ontology metadata. When `ontology_name` is None, the orchestrating LLM
+    can call `get_ontology(ontology_acronym)` to fill it, or call `get_class`
+    on the chosen hit to get the full canonical 5-tuple.
+    """
+
+    class_iri: str = Field(description="Canonical IRI for the class.")
+    pref_label: str = Field(description="skos:prefLabel for the class.")
+    label: str = Field(
+        description="rdfs:label for the class, or the prefLabel if no separate label exists."
+    )
+    ontology_acronym: str = Field(description="Acronym of the containing ontology, e.g. 'DOID'.")
+    ontology_name: str | None = Field(
+        default=None,
+        description=(
+            "Human-readable ontology name if BioPortal's search inlined it; None otherwise. "
+            "Call get_ontology(ontology_acronym) to fill in the None case."
+        ),
+    )
+
+
+# Page-size cap. BioPortal's defaults are sane, but we cap client-side too so a
+# misbehaving caller can't ask for 10,000 results and dump them into the LLM's context.
+_MAX_SEARCH_RESULTS = 50
+
+
+def _extract_acronym_from_ontology_link(link: str) -> str:
+    """Extracts e.g. 'DOID' from 'https://data.bioontology.org/ontologies/DOID'.
+
+    Used as a fallback when a BioPortal search hit doesn't inline the ontology
+    metadata. Returns "" if the link doesn't end in an acronym segment.
+    """
+    if not link:
+        return ""
+    return link.rstrip("/").rsplit("/", 1)[-1]
+
+
+@mcp.tool()
+def find_class(
+    query: str,
+    ontology_acronym: str | None = None,
+    max_results: int = 20,
+) -> list[ClassSearchHit]:
+    """Free-text search for ontology classes, returning a ranked list of candidates.
+
+    Use this when the caller knows the term name but not the IRI (e.g. 'disease',
+    'melanoma'). Optionally scope to a single ontology by passing its acronym
+    (e.g. 'DOID', 'NCIT'); without scope, BioPortal searches all ontologies and
+    returns the highest-ranking matches across the full corpus.
+
+    The returned list is ordered by BioPortal's relevance score. Each hit carries
+    enough information to identify the class (IRI, label, source ontology); for
+    the full canonical 5-tuple needed by CEDAR's `withClassValueConstraint`, follow
+    up with `get_class(hit.class_iri, hit.ontology_acronym)`.
+
+    `max_results` is capped at 50 client-side; values above that are silently
+    truncated to avoid flooding the orchestrating LLM's context with low-ranked
+    candidates.
+    """
+    query = _require_nonblank(query, "query")
+    capped_max = max(1, min(max_results, _MAX_SEARCH_RESULTS))
+
+    params: dict[str, str] = {"q": query, "pagesize": str(capped_max)}
+    if ontology_acronym is not None:
+        # Only validate when actually provided; absent (None) means "search all ontologies".
+        params["ontologies"] = _require_nonblank(ontology_acronym, "ontology_acronym")
+
+    payload = _bioportal_get("/search", params=params)
+
+    hits: list[ClassSearchHit] = []
+    for entry in payload.get("collection", []):
+        # BioPortal sometimes inlines ontology metadata as an `ontology` object;
+        # sometimes only as a `links.ontology` URL. Handle both.
+        ontology_meta = entry.get("ontology") or {}
+        acronym = ontology_meta.get("acronym") or _extract_acronym_from_ontology_link(
+            entry.get("links", {}).get("ontology", "")
+        )
+
+        pref_label = entry.get("prefLabel") or entry.get("@id", "")
+        label = _first_label_string(entry.get("label")) or pref_label
+
+        hits.append(
+            ClassSearchHit(
+                class_iri=entry["@id"],
+                pref_label=pref_label,
+                label=label,
+                ontology_acronym=acronym,
+                ontology_name=ontology_meta.get("name"),
+            )
+        )
+
+    return hits
+
+
+# ---------------------------------------------------------------------------
 # Tool: get_value_set
 #
 # Maps a known value-set IRI within a known value-set collection to the
