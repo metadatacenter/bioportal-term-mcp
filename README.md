@@ -21,7 +21,7 @@ Six tools, each mapping to a piece of the CEDAR controlled-term-field API:
 | `get_value_set(value_set_iri, vs_collection)` | `withValueSetValueConstraint(...)` | implemented |
 | `find_class(query, ontology_acronym?)` | (free-text variant of `get_class`) | implemented |
 | `find_ontology(query)` | (free-text variant of `get_ontology`) | implemented |
-| `find_value_set(query)` | (free-text variant of `get_value_set`) | planned |
+| `find_value_set(query, vs_collection?)` | (free-text variant of `get_value_set`) | implemented |
 
 A diagnostic `ping(message)` tool is also exposed for round-trip verification.
 

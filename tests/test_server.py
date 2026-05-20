@@ -31,6 +31,7 @@ from bioportal_term_mcp.server import (
     _require_nonblank,
     find_class,
     find_ontology,
+    find_value_set,
     get_class,
     get_ontology,
     get_value_set,
@@ -787,6 +788,153 @@ class TestFindClassErrors:
 
 
 # ---------------------------------------------------------------------------
+# find_value_set — mocked HTTP
+# ---------------------------------------------------------------------------
+
+
+class TestFindValueSetHappyPath:
+    @respx.mock
+    def test_returns_value_set_hits(self, api_key: None):
+        respx.get("https://data.bioontology.org/search").mock(
+            return_value=Response(
+                200,
+                json=_search_response_with_hits(
+                    [
+                        {
+                            "@id": "https://purl.humanatlas.io/vocab/hravs#HRAVS_1000161",
+                            "prefLabel": "Area unit",
+                            "ontology": {
+                                "@id": "https://data.bioontology.org/ontologies/HRAVS",
+                                "acronym": "HRAVS",
+                                "name": "HRA Value Set",
+                            },
+                        }
+                    ]
+                ),
+            )
+        )
+
+        results = find_value_set("area unit")
+
+        assert len(results) == 1
+        assert isinstance(results[0], ValueSetTuple)
+        assert results[0].value_set_iri == "https://purl.humanatlas.io/vocab/hravs#HRAVS_1000161"
+        assert results[0].vs_collection == "HRAVS"
+        assert results[0].name == "Area unit"
+        # /search responses don't include child counts; always None for search hits.
+        assert results[0].num_terms is None
+
+    @respx.mock
+    def test_default_scope_searches_cedar_value_set_collections(self, api_key: None):
+        route = respx.get("https://data.bioontology.org/search").mock(
+            return_value=Response(200, json=_search_response_with_hits([]))
+        )
+
+        find_value_set("area unit")
+
+        # Without an explicit vs_collection, the default set CEDARVS,HRAVS is used.
+        sent_url = str(route.calls.last.request.url)
+        assert "ontologies=CEDARVS%2CHRAVS" in sent_url or "ontologies=CEDARVS,HRAVS" in sent_url
+
+    @respx.mock
+    def test_explicit_vs_collection_overrides_default(self, api_key: None):
+        route = respx.get("https://data.bioontology.org/search").mock(
+            return_value=Response(200, json=_search_response_with_hits([]))
+        )
+
+        find_value_set("area unit", vs_collection="HRAVS")
+
+        sent_url = str(route.calls.last.request.url)
+        assert "ontologies=HRAVS" in sent_url
+        # The default-set acronyms shouldn't appear when an explicit one is provided.
+        assert "CEDARVS" not in sent_url
+
+    @respx.mock
+    def test_max_results_sets_pagesize(self, api_key: None):
+        route = respx.get("https://data.bioontology.org/search").mock(
+            return_value=Response(200, json=_search_response_with_hits([]))
+        )
+
+        find_value_set("area unit", max_results=5)
+
+        sent_url = str(route.calls.last.request.url)
+        assert "pagesize=5" in sent_url
+
+    @respx.mock
+    def test_max_results_capped_at_50(self, api_key: None):
+        route = respx.get("https://data.bioontology.org/search").mock(
+            return_value=Response(200, json=_search_response_with_hits([]))
+        )
+
+        find_value_set("area unit", max_results=10000)
+
+        sent_url = str(route.calls.last.request.url)
+        assert "pagesize=50" in sent_url
+
+    @respx.mock
+    def test_empty_results_return_empty_list(self, api_key: None):
+        respx.get("https://data.bioontology.org/search").mock(
+            return_value=Response(200, json=_search_response_with_hits([]))
+        )
+
+        results = find_value_set("xyzabc-no-match")
+
+        assert results == []
+
+    @respx.mock
+    def test_falls_back_to_link_extraction_when_ontology_metadata_absent(
+        self, api_key: None
+    ):
+        respx.get("https://data.bioontology.org/search").mock(
+            return_value=Response(
+                200,
+                json=_search_response_with_hits(
+                    [
+                        {
+                            "@id": "https://purl.humanatlas.io/vocab/hravs#HRAVS_1000161",
+                            "prefLabel": "Area unit",
+                            "links": {
+                                "ontology": "https://data.bioontology.org/ontologies/HRAVS"
+                            },
+                        }
+                    ]
+                ),
+            )
+        )
+
+        results = find_value_set("area unit")
+
+        assert len(results) == 1
+        assert results[0].vs_collection == "HRAVS"
+
+
+class TestFindValueSetValidation:
+    @pytest.mark.parametrize("bad", ["", "   ", "\t"])
+    def test_rejects_empty_query(self, api_key: None, bad: str):
+        with pytest.raises(ValueError, match="query must be a non-empty"):
+            find_value_set(bad)
+
+    @pytest.mark.parametrize("bad", ["", "   ", "\t"])
+    def test_rejects_blank_vs_collection_when_provided(self, api_key: None, bad: str):
+        # vs_collection=None means "use the default set" (valid). Empty *string* is a bug.
+        with pytest.raises(ValueError, match="vs_collection must be a non-empty"):
+            find_value_set("area unit", vs_collection=bad)
+
+
+class TestFindValueSetErrors:
+    @respx.mock
+    def test_5xx_surfaces_as_http_status_error(self, api_key: None):
+        respx.get("https://data.bioontology.org/search").mock(
+            return_value=Response(503)
+        )
+
+        with pytest.raises(httpx.HTTPStatusError) as exc_info:
+            find_value_set("area unit")
+
+        assert exc_info.value.response.status_code == 503
+
+
+# ---------------------------------------------------------------------------
 # get_value_set — mocked HTTP
 # ---------------------------------------------------------------------------
 
@@ -976,6 +1124,22 @@ class TestFindOntologyLive:
         assert len(results) > 0
         # NCIT itself should be the first result for an exact-acronym query.
         assert results[0].acronym == "NCIT"
+
+
+@pytest.mark.live
+class TestFindValueSetLive:
+    def test_search_hravs_for_area_unit_finds_known_value_set(self):
+        if not os.environ.get("BIOPORTAL_API_KEY"):
+            pytest.skip("BIOPORTAL_API_KEY not set; skipping live test.")
+
+        results = find_value_set("area unit", vs_collection="HRAVS", max_results=10)
+
+        assert len(results) > 0
+        # All hits should be in HRAVS (the scope we requested).
+        assert all(hit.vs_collection == "HRAVS" for hit in results)
+        # The canonical HRAVS_1000161 (Area unit) should be among the top hits for this query.
+        iris = [hit.value_set_iri for hit in results]
+        assert any("HRAVS_1000161" in iri for iri in iris)
 
 
 @pytest.mark.live

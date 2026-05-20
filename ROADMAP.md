@@ -15,14 +15,15 @@ Implementation status as of writing:
 | `get_value_set(value_set_iri, vs_collection)` | `withValueSetValueConstraint(...)` | done |
 | `find_class(query, ontology_acronym?)` | (free-text variant of `get_class`) | done |
 | `find_ontology(query)` | (free-text variant of `get_ontology`) | done |
-| `find_value_set(query)` | (free-text variant of `get_value_set`) | next |
+| `find_value_set(query, vs_collection?)` | (free-text variant of `get_value_set`) | done |
 
 Plus `ping(message)` for diagnostics.
 
 ## Build order, with rationale
 
-Five of six tools done. One remaining: `find_value_set`. Same search-shape pattern as
-`find_class` but scoped to value-set-collection ontologies (CEDARVS, HRAVS, etc.).
+All six tools done. Subsequent work is polish (caching, more sophisticated input
+validation, possibly async HTTP) and any new tool variants the orchestrating LLM
+turns out to need in practice.
 
 After all six exist, polish becomes worth doing systematically: add an HTTP cache layer
 in `_bioportal_get` (TTL ~5 min), add an `_require_iri` validator for IRI-input tools,

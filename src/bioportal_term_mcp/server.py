@@ -450,6 +450,80 @@ def get_value_set(value_set_iri: str, vs_collection: str) -> ValueSetTuple:
 
 
 # ---------------------------------------------------------------------------
+# Tool: find_value_set
+#
+# Free-text search for value sets across value-set-collection ontologies.
+# Mirrors find_class but scoped to the small handful of BioPortal ontologies
+# that hold CEDAR-style value sets (CEDARVS, HRAVS, etc.).
+# ---------------------------------------------------------------------------
+
+
+# Default collections to search when the caller doesn't specify one. These are the
+# canonical CEDAR value-set collections; other community VS collections can be searched
+# explicitly via the `vs_collection` parameter.
+_DEFAULT_VS_COLLECTIONS = ("CEDARVS", "HRAVS")
+
+
+@mcp.tool()
+def find_value_set(
+    query: str,
+    vs_collection: str | None = None,
+    max_results: int = 20,
+) -> list[ValueSetTuple]:
+    """Free-text search for value sets, returning a ranked list of candidates.
+
+    Use this when the caller knows part of the value set's name (e.g. 'area unit')
+    but not its IRI. For known-IRI lookup, use `get_value_set` directly.
+
+    When `vs_collection` is provided, the search is scoped to that single collection
+    (e.g. 'HRAVS', 'CEDARVS'). When omitted, BioPortal searches across a default set
+    of known CEDAR value-set collections (CEDARVS, HRAVS) — sufficient for most
+    common cases. Pass `vs_collection` explicitly for community-specific VS collections.
+
+    Each hit carries (value_set_iri, vs_collection, name, num_terms?) — the same shape
+    as `get_value_set`'s return — but `num_terms` is reliably None for search hits
+    (BioPortal's search response doesn't include term counts). Callers needing the
+    count can follow up with `get_value_set` on the chosen hit.
+
+    `max_results` is capped at 50 client-side.
+    """
+    query = _require_nonblank(query, "query")
+    capped_max = max(1, min(max_results, _MAX_SEARCH_RESULTS))
+
+    if vs_collection is not None:
+        # Explicit collection: validate and use as-is.
+        collections_param = _require_nonblank(vs_collection, "vs_collection")
+    else:
+        collections_param = ",".join(_DEFAULT_VS_COLLECTIONS)
+
+    params: dict[str, str] = {
+        "q": query,
+        "ontologies": collections_param,
+        "pagesize": str(capped_max),
+    }
+    payload = _bioportal_get("/search", params=params)
+    assert isinstance(payload, dict)
+
+    hits: list[ValueSetTuple] = []
+    for entry in payload.get("collection", []):
+        ontology_meta = entry.get("ontology") or {}
+        acronym = ontology_meta.get("acronym") or _extract_acronym_from_ontology_link(
+            entry.get("links", {}).get("ontology", "")
+        )
+        name = entry.get("prefLabel") or entry.get("@id", "")
+        hits.append(
+            ValueSetTuple(
+                value_set_iri=entry["@id"],
+                vs_collection=acronym,
+                name=name,
+                num_terms=None,  # not present in /search responses
+            )
+        )
+
+    return hits
+
+
+# ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
 
