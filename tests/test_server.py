@@ -23,10 +23,12 @@ from httpx import Response
 from bioportal_term_mcp.server import (
     ClassTuple,
     OntologyTuple,
+    ValueSetTuple,
     _first_label_string,
     _require_nonblank,
     get_class,
     get_ontology,
+    get_value_set,
     ping,
 )
 
@@ -377,6 +379,121 @@ class TestGetClassErrors:
 
 
 # ---------------------------------------------------------------------------
+# get_value_set — mocked HTTP
+# ---------------------------------------------------------------------------
+
+
+HRAVS_AREA_UNIT_IRI = "https://purl.humanatlas.io/vocab/hravs#HRAVS_1000161"
+HRAVS_AREA_UNIT_IRI_ENCODED = (
+    "https%3A%2F%2Fpurl.humanatlas.io%2Fvocab%2Fhravs%23HRAVS_1000161"
+)
+
+
+class TestGetValueSetHappyPath:
+    @respx.mock
+    def test_returns_canonical_tuple(self, api_key: None):
+        respx.get(
+            f"https://data.bioontology.org/ontologies/HRAVS/classes/{HRAVS_AREA_UNIT_IRI_ENCODED}"
+        ).mock(
+            return_value=Response(
+                200,
+                json={
+                    "@id": HRAVS_AREA_UNIT_IRI,
+                    "prefLabel": "Area unit",
+                    "numChildren": 40,
+                },
+            )
+        )
+
+        result = get_value_set(HRAVS_AREA_UNIT_IRI, "HRAVS")
+
+        assert isinstance(result, ValueSetTuple)
+        assert result.value_set_iri == HRAVS_AREA_UNIT_IRI
+        assert result.vs_collection == "HRAVS"
+        assert result.name == "Area unit"
+        assert result.num_terms == 40
+
+    @respx.mock
+    def test_url_encodes_value_set_iri_correctly(self, api_key: None):
+        # IRI contains `:`, `/`, and `#` which must all be percent-encoded in the URL path.
+        route = respx.get(
+            f"https://data.bioontology.org/ontologies/HRAVS/classes/{HRAVS_AREA_UNIT_IRI_ENCODED}"
+        ).mock(
+            return_value=Response(
+                200, json={"@id": HRAVS_AREA_UNIT_IRI, "prefLabel": "Area unit"}
+            )
+        )
+
+        get_value_set(HRAVS_AREA_UNIT_IRI, "HRAVS")
+
+        assert route.called
+
+    @respx.mock
+    def test_num_terms_is_none_when_absent(self, api_key: None):
+        # BioPortal often omits a count from the class endpoint. The tool must still
+        # return a usable tuple; CEDAR has a 3-arg overload for the no-count case.
+        respx.get(
+            f"https://data.bioontology.org/ontologies/HRAVS/classes/{HRAVS_AREA_UNIT_IRI_ENCODED}"
+        ).mock(
+            return_value=Response(
+                200,
+                json={"@id": HRAVS_AREA_UNIT_IRI, "prefLabel": "Area unit"},
+            )
+        )
+
+        result = get_value_set(HRAVS_AREA_UNIT_IRI, "HRAVS")
+
+        assert result.num_terms is None
+        assert result.name == "Area unit"
+
+    @respx.mock
+    def test_num_terms_is_none_when_non_integer(self, api_key: None):
+        # Defensive: if BioPortal ever returns a non-int for numChildren (string, null,
+        # list), the tool falls back to None rather than crashing.
+        respx.get(
+            f"https://data.bioontology.org/ontologies/HRAVS/classes/{HRAVS_AREA_UNIT_IRI_ENCODED}"
+        ).mock(
+            return_value=Response(
+                200,
+                json={
+                    "@id": HRAVS_AREA_UNIT_IRI,
+                    "prefLabel": "Area unit",
+                    "numChildren": "forty",
+                },
+            )
+        )
+
+        result = get_value_set(HRAVS_AREA_UNIT_IRI, "HRAVS")
+
+        assert result.num_terms is None
+
+
+class TestGetValueSetValidation:
+    @pytest.mark.parametrize("bad", ["", "   ", "\t"])
+    def test_rejects_empty_value_set_iri(self, api_key: None, bad: str):
+        with pytest.raises(ValueError, match="value_set_iri must be a non-empty"):
+            get_value_set(bad, "HRAVS")
+
+    @pytest.mark.parametrize("bad", ["", "   ", "\t"])
+    def test_rejects_empty_vs_collection(self, api_key: None, bad: str):
+        with pytest.raises(ValueError, match="vs_collection must be a non-empty"):
+            get_value_set(HRAVS_AREA_UNIT_IRI, bad)
+
+
+class TestGetValueSetErrors:
+    @respx.mock
+    def test_404_surfaces_as_http_status_error(self, api_key: None):
+        respx.get(
+            f"https://data.bioontology.org/ontologies/HRAVS/classes/{HRAVS_AREA_UNIT_IRI_ENCODED}"
+        ).mock(return_value=Response(404, json={"error": "not found"}))
+
+        with pytest.raises(httpx.HTTPStatusError) as exc_info:
+            get_value_set(HRAVS_AREA_UNIT_IRI, "HRAVS")
+
+        assert exc_info.value.response.status_code == 404
+
+
+# ---------------------------------------------------------------------------
 # Live tests — opt-in
 #
 # Run with:    uv run pytest -m live
@@ -412,3 +529,18 @@ class TestGetClassLive:
         # Both label and prefLabel should be populated and non-empty.
         assert result.pref_label
         assert result.label
+
+
+@pytest.mark.live
+class TestGetValueSetLive:
+    def test_hravs_area_unit_resolves(self):
+        if not os.environ.get("BIOPORTAL_API_KEY"):
+            pytest.skip("BIOPORTAL_API_KEY not set; skipping live test.")
+
+        result = get_value_set(
+            "https://purl.humanatlas.io/vocab/hravs#HRAVS_1000161", "HRAVS"
+        )
+
+        assert result.value_set_iri == "https://purl.humanatlas.io/vocab/hravs#HRAVS_1000161"
+        assert result.vs_collection == "HRAVS"
+        assert result.name  # whatever BioPortal returns, it should be non-empty

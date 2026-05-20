@@ -18,9 +18,9 @@ Six tools, each mapping to a piece of the CEDAR controlled-term-field API:
 |---|---|---|
 | `get_ontology(acronym)` | `withOntologyValueConstraint(uri, acronym, name)` | implemented |
 | `get_class(class_iri, ontology_acronym)` | `withClassValueConstraint(...)` / `withBranchValueConstraint(...)` | implemented |
+| `get_value_set(value_set_iri, vs_collection)` | `withValueSetValueConstraint(...)` | implemented |
 | `find_ontology(query)` | (free-text variant of `get_ontology`) | planned |
 | `find_class(query, ontology_acronym?)` | (free-text variant of `get_class`) | planned |
-| `get_value_set(value_set_iri)` | `withValueSetValueConstraint(...)` | planned |
 | `find_value_set(query)` | (free-text variant of `get_value_set`) | planned |
 
 A diagnostic `ping(message)` tool is also exposed for round-trip verification.

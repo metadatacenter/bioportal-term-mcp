@@ -12,8 +12,8 @@ Implementation status as of writing:
 |---|---|---|
 | `get_ontology(acronym)` | `withOntologyValueConstraint(uri, acronym, name)` | done |
 | `get_class(class_iri, ontology_acronym)` | `withClassValueConstraint(...)` / `withBranchValueConstraint(...)` | done |
-| `get_value_set(value_set_iri)` | `withValueSetValueConstraint(...)` | next |
-| `find_class(query, ontology_acronym?)` | (free-text variant of `get_class`) | planned |
+| `get_value_set(value_set_iri, vs_collection)` | `withValueSetValueConstraint(...)` | done |
+| `find_class(query, ontology_acronym?)` | (free-text variant of `get_class`) | next |
 | `find_ontology(query)` | (free-text variant of `get_ontology`) | planned |
 | `find_value_set(query)` | (free-text variant of `get_value_set`) | planned |
 
@@ -21,15 +21,15 @@ Plus `ping(message)` for diagnostics.
 
 ## Build order, with rationale
 
-1. **`get_value_set`** — completes the get-by-IRI trio across all three resource types
-   (ontology / class / value set). Same shape as `get_class`; quick to add while patterns
-   are fresh.
-2. **`find_class`** — first search-shaped tool. Introduces the list-of-ranked-candidates
+The get-by-IRI trio (`get_ontology`, `get_class`, `get_value_set`) is complete. Remaining
+work is the three `find_*` tools, which share a new return shape (ranked list of candidates).
+
+1. **`find_class`** — first search-shaped tool. Introduces the list-of-ranked-candidates
    return pattern that the other `find_*` tools will mirror. Highest practical value
    because real users rarely know class IRIs but know names.
-3. **`find_ontology`** — same search shape, simpler surface (no ontology-scope param).
+2. **`find_ontology`** — same search shape, simpler surface (no ontology-scope param).
    Pattern-replica of `find_class`.
-4. **`find_value_set`** — same search shape, third resource type. Pattern-replica.
+3. **`find_value_set`** — same search shape, third resource type. Pattern-replica.
 
 After all six exist, polish becomes worth doing systematically: add an HTTP cache layer
 in `_bioportal_get` (TTL ~5 min), add an `_require_iri` validator for IRI-input tools,

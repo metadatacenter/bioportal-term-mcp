@@ -193,6 +193,73 @@ def get_class(class_iri: str, ontology_acronym: str) -> ClassTuple:
 
 
 # ---------------------------------------------------------------------------
+# Tool: get_value_set
+#
+# Maps a known value-set IRI within a known value-set collection to the
+# 4-tuple needed by CEDAR's `withValueSetValueConstraint(uri, vsCollection,
+# name, numTerms?)`. Value sets in BioPortal are classes within special
+# "value set collection" ontologies (e.g. CEDARVS, HRAVS).
+# ---------------------------------------------------------------------------
+
+
+class ValueSetTuple(BaseModel):
+    """The fields needed by `withValueSetValueConstraint(uri, vsCollection, name, numTerms?)`.
+
+    `num_terms` is best-effort: BioPortal's class endpoint doesn't always include a count,
+    and paginating the descendants endpoint just to get a count is too expensive for a
+    single tool call. Returns None when the count isn't available cheaply; callers can
+    pass the 3-arg `withValueSetValueConstraint` overload in that case.
+    """
+
+    value_set_iri: str = Field(description="Canonical IRI for the value set.")
+    vs_collection: str = Field(
+        description="Acronym of the value-set collection ontology, e.g. 'CEDARVS' or 'HRAVS'."
+    )
+    name: str = Field(description="Human-readable name of the value set (skos:prefLabel).")
+    num_terms: int | None = Field(
+        default=None,
+        description="Number of terms in the value set, if cheaply available. None otherwise.",
+    )
+
+
+@mcp.tool()
+def get_value_set(value_set_iri: str, vs_collection: str) -> ValueSetTuple:
+    """Resolves a value-set IRI within a BioPortal value-set collection to the 4-tuple needed by CEDAR.
+
+    The returned tuple fills (uri, vsCollection, name, numTerms?) for
+    `withValueSetValueConstraint`. Value sets in BioPortal are classes within special
+    "value set collection" ontologies (CEDARVS, HRAVS, etc.); the collection acronym
+    behaves like an ontology acronym in BioPortal's URL structure.
+
+    Use this when the caller already knows the value-set IRI. For free-text lookup,
+    use `find_value_set` instead.
+
+    `num_terms` is returned as None unless BioPortal cheaply exposes the count in its
+    class response. Callers who don't need the count can pass the 3-arg form of
+    `withValueSetValueConstraint`.
+    """
+    value_set_iri = _require_nonblank(value_set_iri, "value_set_iri")
+    vs_collection = _require_nonblank(vs_collection, "vs_collection")
+
+    # Value sets are classes within the vs-collection ontology in BioPortal's URL space.
+    encoded_iri = urllib.parse.quote(value_set_iri, safe="")
+    payload = _bioportal_get(f"/ontologies/{vs_collection}/classes/{encoded_iri}")
+
+    name = payload.get("prefLabel") or payload["@id"]
+    # Some BioPortal responses expose a count under various keys. Be defensive: any
+    # integer-typed field hinting at a count is acceptable; otherwise leave as None.
+    raw_count = payload.get("numChildren")
+    num_terms = raw_count if isinstance(raw_count, int) else None
+
+    return ValueSetTuple(
+        value_set_iri=payload["@id"],
+        vs_collection=vs_collection,
+        name=name,
+        num_terms=num_terms,
+    )
+
+
+# ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
 
