@@ -14,19 +14,15 @@ Implementation status as of writing:
 | `get_class(class_iri, ontology_acronym)` | `withClassValueConstraint(...)` / `withBranchValueConstraint(...)` | done |
 | `get_value_set(value_set_iri, vs_collection)` | `withValueSetValueConstraint(...)` | done |
 | `find_class(query, ontology_acronym?)` | (free-text variant of `get_class`) | done |
-| `find_ontology(query)` | (free-text variant of `get_ontology`) | next |
-| `find_value_set(query)` | (free-text variant of `get_value_set`) | planned |
+| `find_ontology(query)` | (free-text variant of `get_ontology`) | done |
+| `find_value_set(query)` | (free-text variant of `get_value_set`) | next |
 
 Plus `ping(message)` for diagnostics.
 
 ## Build order, with rationale
 
-Four of six tools done. The search-shape pattern is established by `find_class`. Two
-remaining `find_*` tools are pattern-replicas.
-
-1. **`find_ontology`** — simpler surface (no ontology-scope param). Pattern-replica of
-   `find_class`.
-2. **`find_value_set`** — search across value-set collection ontologies. Pattern-replica.
+Five of six tools done. One remaining: `find_value_set`. Same search-shape pattern as
+`find_class` but scoped to value-set-collection ontologies (CEDARVS, HRAVS, etc.).
 
 After all six exist, polish becomes worth doing systematically: add an HTTP cache layer
 in `_bioportal_get` (TTL ~5 min), add an `_require_iri` validator for IRI-input tools,

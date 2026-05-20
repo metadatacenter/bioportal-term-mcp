@@ -27,8 +27,10 @@ from bioportal_term_mcp.server import (
     ValueSetTuple,
     _extract_acronym_from_ontology_link,
     _first_label_string,
+    _rank_ontology_match,
     _require_nonblank,
     find_class,
+    find_ontology,
     get_class,
     get_ontology,
     get_value_set,
@@ -408,6 +410,197 @@ class TestExtractAcronymFromOntologyLink:
 
 
 # ---------------------------------------------------------------------------
+# _rank_ontology_match helper
+# ---------------------------------------------------------------------------
+
+
+class TestRankOntologyMatch:
+    def test_exact_acronym_match_ranks_first(self):
+        exact = OntologyTuple(acronym="DOID", name="Human Disease Ontology", ontology_iri="x")
+        prefix = OntologyTuple(acronym="DOIDX", name="other", ontology_iri="y")
+        substr = OntologyTuple(acronym="OBO", name="contains doid somewhere", ontology_iri="z")
+
+        ranked = sorted([substr, prefix, exact], key=lambda t: _rank_ontology_match(t, "doid"))
+
+        assert ranked[0] is exact
+        assert ranked[1] is prefix
+        assert ranked[2] is substr
+
+    def test_name_prefix_beats_substring(self):
+        name_prefix = OntologyTuple(acronym="X", name="Disease Ontology", ontology_iri="a")
+        substr = OntologyTuple(acronym="Y", name="other disease thing", ontology_iri="b")
+
+        ranked = sorted(
+            [substr, name_prefix], key=lambda t: _rank_ontology_match(t, "disease")
+        )
+
+        assert ranked[0] is name_prefix
+        assert ranked[1] is substr
+
+    def test_alphabetical_within_band(self):
+        # Two equal-band matches sort alphabetically by acronym for determinism.
+        zulu = OntologyTuple(acronym="ZULU", name="Zulu Ontology", ontology_iri="z")
+        alpha = OntologyTuple(acronym="ALPHA", name="Alpha Ontology", ontology_iri="a")
+
+        ranked = sorted([zulu, alpha], key=lambda t: _rank_ontology_match(t, "ontology"))
+
+        # Both are band-3 substring matches; ALPHA comes first alphabetically.
+        assert ranked[0] is alpha
+        assert ranked[1] is zulu
+
+
+# ---------------------------------------------------------------------------
+# find_ontology — mocked HTTP
+# ---------------------------------------------------------------------------
+
+
+def _ontology_catalog(ontologies: list[dict]) -> list[dict]:
+    """Builds a minimal /ontologies response payload."""
+    return ontologies
+
+
+# A small synthetic ontology catalog for exercising matching and ranking logic
+# without coupling to BioPortal's actual catalog size.
+_FAKE_CATALOG = [
+    {
+        "@id": "https://data.bioontology.org/ontologies/DOID",
+        "acronym": "DOID",
+        "name": "Human Disease Ontology",
+    },
+    {
+        "@id": "https://data.bioontology.org/ontologies/NCIT",
+        "acronym": "NCIT",
+        "name": "National Cancer Institute Thesaurus",
+    },
+    {
+        "@id": "https://data.bioontology.org/ontologies/MONDO",
+        "acronym": "MONDO",
+        "name": "Mondo Disease Ontology",
+    },
+    {
+        "@id": "https://data.bioontology.org/ontologies/HRAVS",
+        "acronym": "HRAVS",
+        "name": "HRA Value Set",
+    },
+]
+
+
+class TestFindOntologyHappyPath:
+    @respx.mock
+    def test_exact_acronym_match_ranks_first(self, api_key: None):
+        respx.get("https://data.bioontology.org/ontologies").mock(
+            return_value=Response(200, json=_FAKE_CATALOG)
+        )
+
+        results = find_ontology("DOID")
+
+        assert len(results) >= 1
+        assert results[0].acronym == "DOID"
+        assert results[0].name == "Human Disease Ontology"
+        assert results[0].ontology_iri == "https://data.bioontology.org/ontologies/DOID"
+
+    @respx.mock
+    def test_case_insensitive_acronym_match(self, api_key: None):
+        respx.get("https://data.bioontology.org/ontologies").mock(
+            return_value=Response(200, json=_FAKE_CATALOG)
+        )
+
+        results = find_ontology("doid")
+
+        assert results[0].acronym == "DOID"
+
+    @respx.mock
+    def test_substring_in_name_matches(self, api_key: None):
+        respx.get("https://data.bioontology.org/ontologies").mock(
+            return_value=Response(200, json=_FAKE_CATALOG)
+        )
+
+        results = find_ontology("disease")
+
+        # DOID and MONDO both have "Disease" in their names.
+        acronyms = [r.acronym for r in results]
+        assert "DOID" in acronyms
+        assert "MONDO" in acronyms
+
+    @respx.mock
+    def test_no_match_returns_empty_list(self, api_key: None):
+        respx.get("https://data.bioontology.org/ontologies").mock(
+            return_value=Response(200, json=_FAKE_CATALOG)
+        )
+
+        results = find_ontology("xyzabc-no-match")
+
+        assert results == []
+
+    @respx.mock
+    def test_max_results_caps_returned_list(self, api_key: None):
+        respx.get("https://data.bioontology.org/ontologies").mock(
+            return_value=Response(200, json=_FAKE_CATALOG)
+        )
+
+        # All four catalog entries contain "o" — request only the top 2.
+        results = find_ontology("o", max_results=2)
+
+        assert len(results) == 2
+
+    @respx.mock
+    def test_max_results_capped_at_50(self, api_key: None):
+        # Even if the caller asks for 10000, we never return more than 50.
+        # (Easier to verify with a larger synthetic catalog; here just confirm
+        # the cap doesn't blow up with a small catalog.)
+        big_catalog = [
+            {
+                "@id": f"https://data.bioontology.org/ontologies/ONT{i}",
+                "acronym": f"ONT{i}",
+                "name": f"Ontology {i}",
+            }
+            for i in range(100)
+        ]
+        respx.get("https://data.bioontology.org/ontologies").mock(
+            return_value=Response(200, json=big_catalog)
+        )
+
+        results = find_ontology("ont", max_results=10000)
+
+        assert len(results) == 50
+
+    @respx.mock
+    def test_skips_entries_with_no_acronym_or_name(self, api_key: None):
+        # Defensive: if BioPortal ever returns a malformed entry with neither field,
+        # we skip it rather than crash.
+        catalog_with_junk = _FAKE_CATALOG + [{"@id": "junk", "acronym": "", "name": ""}]
+        respx.get("https://data.bioontology.org/ontologies").mock(
+            return_value=Response(200, json=catalog_with_junk)
+        )
+
+        # No assertion needed beyond "doesn't crash"; query something that wouldn't match
+        # the junk entry anyway.
+        results = find_ontology("disease")
+
+        assert all(r.acronym for r in results)
+
+
+class TestFindOntologyValidation:
+    @pytest.mark.parametrize("bad", ["", "   ", "\t"])
+    def test_rejects_empty_query(self, api_key: None, bad: str):
+        with pytest.raises(ValueError, match="query must be a non-empty"):
+            find_ontology(bad)
+
+
+class TestFindOntologyErrors:
+    @respx.mock
+    def test_5xx_from_catalog_endpoint_surfaces(self, api_key: None):
+        respx.get("https://data.bioontology.org/ontologies").mock(
+            return_value=Response(503)
+        )
+
+        with pytest.raises(httpx.HTTPStatusError) as exc_info:
+            find_ontology("disease")
+
+        assert exc_info.value.response.status_code == 503
+
+
+# ---------------------------------------------------------------------------
 # find_class — mocked HTTP
 # ---------------------------------------------------------------------------
 
@@ -759,6 +952,30 @@ class TestGetValueSetLive:
         assert result.value_set_iri == "https://purl.humanatlas.io/vocab/hravs#HRAVS_1000161"
         assert result.vs_collection == "HRAVS"
         assert result.name  # whatever BioPortal returns, it should be non-empty
+
+
+@pytest.mark.live
+class TestFindOntologyLive:
+    def test_finds_doid_by_substring(self):
+        if not os.environ.get("BIOPORTAL_API_KEY"):
+            pytest.skip("BIOPORTAL_API_KEY not set; skipping live test.")
+
+        results = find_ontology("human disease", max_results=10)
+
+        assert len(results) > 0
+        # DOID should be in the top 10 results for "human disease".
+        acronyms = [r.acronym for r in results]
+        assert "DOID" in acronyms
+
+    def test_exact_acronym_ranks_first(self):
+        if not os.environ.get("BIOPORTAL_API_KEY"):
+            pytest.skip("BIOPORTAL_API_KEY not set; skipping live test.")
+
+        results = find_ontology("NCIT", max_results=10)
+
+        assert len(results) > 0
+        # NCIT itself should be the first result for an exact-acronym query.
+        assert results[0].acronym == "NCIT"
 
 
 @pytest.mark.live

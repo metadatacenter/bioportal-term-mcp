@@ -36,8 +36,12 @@ def _api_key() -> str:
     return key
 
 
-def _bioportal_get(path: str, params: dict[str, str] | None = None) -> dict:
+def _bioportal_get(path: str, params: dict[str, str] | None = None) -> dict | list:
     """Authenticated GET against the BioPortal REST API.
+
+    Most BioPortal endpoints return a JSON object; the `/ontologies` listing endpoint
+    returns a JSON array, hence the union return type. Callers are responsible for
+    knowing which shape to expect for the path they invoke.
 
     Follows 3xx redirects so a benign restructure on the BioPortal side doesn't surface
     as a tool error. Raises httpx.HTTPStatusError on non-2xx final responses; FastMCP
@@ -101,11 +105,90 @@ def get_ontology(acronym: str) -> OntologyTuple:
     """
     acronym = _require_nonblank(acronym, "acronym")
     payload = _bioportal_get(f"/ontologies/{acronym}")
+    assert isinstance(payload, dict)
     return OntologyTuple(
         acronym=payload["acronym"],
         name=payload["name"],
         ontology_iri=payload["@id"],
     )
+
+
+# ---------------------------------------------------------------------------
+# Tool: find_ontology
+#
+# Free-text search over BioPortal's ontology catalog. Unlike find_class,
+# BioPortal has no server-side text-search endpoint for ontologies — the
+# /ontologies endpoint returns the full catalog as a flat list, which we
+# rank client-side. The cost is one HTTP call per invocation; trivially
+# cacheable later if it becomes a hotspot.
+# ---------------------------------------------------------------------------
+
+
+def _rank_ontology_match(tuple_: OntologyTuple, query_lower: str) -> tuple[int, str]:
+    """Sort key: more-specific matches sort first.
+
+    Priorities (lowest tuple key wins):
+      0: exact acronym match (case-insensitive)
+      1: acronym prefix match
+      2: name prefix match
+      3: substring match in either field
+    Within each band, sort alphabetically by acronym for determinism.
+    """
+    acro = tuple_.acronym.lower()
+    name = tuple_.name.lower()
+    if acro == query_lower:
+        band = 0
+    elif acro.startswith(query_lower):
+        band = 1
+    elif name.startswith(query_lower):
+        band = 2
+    else:
+        band = 3
+    return (band, tuple_.acronym.lower())
+
+
+@mcp.tool()
+def find_ontology(query: str, max_results: int = 20) -> list[OntologyTuple]:
+    """Free-text search for BioPortal ontologies, returning a ranked list of candidates.
+
+    Use this when the caller knows part of the ontology's name or acronym but not the
+    exact value (e.g. 'human disease', 'cancer', 'NCIT'). For known-acronym lookup, use
+    `get_ontology(acronym)` directly.
+
+    Each hit carries the same (acronym, name, ontology_iri) tuple that fills CEDAR's
+    `withOntologyValueConstraint` — no follow-up call is needed.
+
+    Matching is case-insensitive substring over both the acronym and the human-readable
+    name. Ranking prefers exact acronym matches, then acronym/name prefix matches, then
+    substring hits. `max_results` is capped at 50 client-side.
+
+    Implementation note: BioPortal's `/ontologies` endpoint returns the full catalog;
+    filtering and ranking happen client-side. One HTTP call per invocation.
+    """
+    query = _require_nonblank(query, "query")
+    query_lower = query.lower()
+    capped_max = max(1, min(max_results, _MAX_SEARCH_RESULTS))
+
+    payload = _bioportal_get("/ontologies")
+    assert isinstance(payload, list)
+
+    candidates: list[OntologyTuple] = []
+    for entry in payload:
+        acronym = entry.get("acronym", "")
+        name = entry.get("name", "")
+        if not acronym and not name:
+            continue
+        if query_lower in acronym.lower() or query_lower in name.lower():
+            candidates.append(
+                OntologyTuple(
+                    acronym=acronym,
+                    name=name,
+                    ontology_iri=entry.get("@id", ""),
+                )
+            )
+
+    candidates.sort(key=lambda t: _rank_ontology_match(t, query_lower))
+    return candidates[:capped_max]
 
 
 # ---------------------------------------------------------------------------
