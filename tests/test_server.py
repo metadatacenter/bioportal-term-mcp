@@ -296,7 +296,7 @@ class TestGetClassHappyPath:
     @respx.mock
     def test_label_falls_back_to_pref_label_when_absent(self, api_key: None):
         # BioPortal sometimes omits rdfs:label entirely. The tool must still return a
-        # usable `label` field so the CEDAR builder doesn't end up with None.
+        # usable `label` field so consumers don't end up with None.
         respx.get(
             f"https://data.bioontology.org/ontologies/DOID/classes/{DOID_DISEASE_IRI_ENCODED}"
         ).mock(
@@ -814,7 +814,7 @@ class TestFindValueSetHappyPath:
             )
         )
 
-        results = find_value_set("area unit")
+        results = find_value_set("area unit", vs_collection="HRAVS")
 
         assert len(results) == 1
         assert isinstance(results[0], ValueSetTuple)
@@ -825,19 +825,7 @@ class TestFindValueSetHappyPath:
         assert results[0].num_terms is None
 
     @respx.mock
-    def test_default_scope_searches_cedar_value_set_collections(self, api_key: None):
-        route = respx.get("https://data.bioontology.org/search").mock(
-            return_value=Response(200, json=_search_response_with_hits([]))
-        )
-
-        find_value_set("area unit")
-
-        # Without an explicit vs_collection, the default set CEDARVS,HRAVS is used.
-        sent_url = str(route.calls.last.request.url)
-        assert "ontologies=CEDARVS%2CHRAVS" in sent_url or "ontologies=CEDARVS,HRAVS" in sent_url
-
-    @respx.mock
-    def test_explicit_vs_collection_overrides_default(self, api_key: None):
+    def test_vs_collection_scopes_the_search(self, api_key: None):
         route = respx.get("https://data.bioontology.org/search").mock(
             return_value=Response(200, json=_search_response_with_hits([]))
         )
@@ -846,8 +834,6 @@ class TestFindValueSetHappyPath:
 
         sent_url = str(route.calls.last.request.url)
         assert "ontologies=HRAVS" in sent_url
-        # The default-set acronyms shouldn't appear when an explicit one is provided.
-        assert "CEDARVS" not in sent_url
 
     @respx.mock
     def test_max_results_sets_pagesize(self, api_key: None):
@@ -855,7 +841,7 @@ class TestFindValueSetHappyPath:
             return_value=Response(200, json=_search_response_with_hits([]))
         )
 
-        find_value_set("area unit", max_results=5)
+        find_value_set("area unit", vs_collection="HRAVS", max_results=5)
 
         sent_url = str(route.calls.last.request.url)
         assert "pagesize=5" in sent_url
@@ -866,7 +852,7 @@ class TestFindValueSetHappyPath:
             return_value=Response(200, json=_search_response_with_hits([]))
         )
 
-        find_value_set("area unit", max_results=10000)
+        find_value_set("area unit", vs_collection="HRAVS", max_results=10000)
 
         sent_url = str(route.calls.last.request.url)
         assert "pagesize=50" in sent_url
@@ -877,7 +863,7 @@ class TestFindValueSetHappyPath:
             return_value=Response(200, json=_search_response_with_hits([]))
         )
 
-        results = find_value_set("xyzabc-no-match")
+        results = find_value_set("xyzabc-no-match", vs_collection="HRAVS")
 
         assert results == []
 
@@ -902,7 +888,7 @@ class TestFindValueSetHappyPath:
             )
         )
 
-        results = find_value_set("area unit")
+        results = find_value_set("area unit", vs_collection="HRAVS")
 
         assert len(results) == 1
         assert results[0].vs_collection == "HRAVS"
@@ -912,11 +898,11 @@ class TestFindValueSetValidation:
     @pytest.mark.parametrize("bad", ["", "   ", "\t"])
     def test_rejects_empty_query(self, api_key: None, bad: str):
         with pytest.raises(ValueError, match="query must be a non-empty"):
-            find_value_set(bad)
+            find_value_set(bad, vs_collection="HRAVS")
 
     @pytest.mark.parametrize("bad", ["", "   ", "\t"])
-    def test_rejects_blank_vs_collection_when_provided(self, api_key: None, bad: str):
-        # vs_collection=None means "use the default set" (valid). Empty *string* is a bug.
+    def test_rejects_empty_vs_collection(self, api_key: None, bad: str):
+        # vs_collection is required; an empty string is a bug.
         with pytest.raises(ValueError, match="vs_collection must be a non-empty"):
             find_value_set("area unit", vs_collection=bad)
 
@@ -929,7 +915,7 @@ class TestFindValueSetErrors:
         )
 
         with pytest.raises(httpx.HTTPStatusError) as exc_info:
-            find_value_set("area unit")
+            find_value_set("area unit", vs_collection="HRAVS")
 
         assert exc_info.value.response.status_code == 503
 
@@ -987,7 +973,7 @@ class TestGetValueSetHappyPath:
     @respx.mock
     def test_num_terms_is_none_when_absent(self, api_key: None):
         # BioPortal often omits a count from the class endpoint. The tool must still
-        # return a usable tuple; CEDAR has a 3-arg overload for the no-count case.
+        # return a usable tuple; num_terms is documented as best-effort / Optional.
         respx.get(
             f"https://data.bioontology.org/ontologies/HRAVS/classes/{HRAVS_AREA_UNIT_IRI_ENCODED}"
         ).mock(

@@ -1,14 +1,17 @@
 """
-MCP server for resolving free-text descriptions of BioPortal ontologies, classes, and
-value sets into the canonical (IRI, acronym, name, ...) tuples required by the CEDAR
-artifact library's controlled-term-field builders.
+MCP server for resolving BioPortal ontologies, classes, and value sets into canonical
+(IRI, acronym, name, ...) tuples.
 
-Six tools planned, mapped to what the four CEDAR constraint builders need:
+Six tools across three resource types and two access modes:
 
-  withOntologyValueConstraint   <- get_ontology / find_ontology
-  withBranchValueConstraint     <- find_class / get_class
-  withClassValueConstraint      <- find_class / get_class
-  withValueSetValueConstraint   <- find_value_set / get_value_set
+                          known-identifier            free-text search
+  ontology                get_ontology                find_ontology
+  class                   get_class                   find_class
+  value set               get_value_set               find_value_set
+
+The server has no knowledge of any downstream consumer. Each tool returns a typed tuple
+identifying the requested resource; consumers map those tuples into their own domain
+models.
 """
 
 from __future__ import annotations
@@ -79,13 +82,12 @@ def ping(message: str) -> str:
 # ---------------------------------------------------------------------------
 # Tool: get_ontology
 #
-# Maps a known BioPortal acronym (e.g. "DOID") to the canonical 3-tuple the
-# CEDAR library's `withOntologyValueConstraint(uri, acronym, name)` builder
-# needs.
+# Maps a known BioPortal acronym (e.g. "DOID") to its canonical (acronym, name,
+# ontology_iri) triple.
 # ---------------------------------------------------------------------------
 
 class OntologyTuple(BaseModel):
-    """The 3-tuple expected by `ControlledTermField.builder().withOntologyValueConstraint(...)`."""
+    """Canonical identification of a BioPortal ontology."""
 
     acronym: str = Field(description="Ontology acronym, e.g. 'DOID'.")
     name: str = Field(description="Human-readable ontology name, e.g. 'Human Disease Ontology'.")
@@ -94,10 +96,9 @@ class OntologyTuple(BaseModel):
 
 @mcp.tool()
 def get_ontology(acronym: str) -> OntologyTuple:
-    """Resolves a BioPortal ontology acronym to the canonical (acronym, name, ontology_iri) tuple.
+    """Resolves a BioPortal ontology acronym to its canonical (acronym, name, ontology_iri) triple.
 
     Use this when the caller already knows the acronym (e.g. 'DOID', 'NCIT', 'HRAVS').
-    The returned tuple fills the three arguments of CEDAR's `withOntologyValueConstraint`.
     For free-text lookup (e.g. 'Human Disease Ontology' without the acronym), use
     `find_ontology` instead.
 
@@ -155,8 +156,8 @@ def find_ontology(query: str, max_results: int = 20) -> list[OntologyTuple]:
     exact value (e.g. 'human disease', 'cancer', 'NCIT'). For known-acronym lookup, use
     `get_ontology(acronym)` directly.
 
-    Each hit carries the same (acronym, name, ontology_iri) tuple that fills CEDAR's
-    `withOntologyValueConstraint` — no follow-up call is needed.
+    Each hit carries the same (acronym, name, ontology_iri) triple `get_ontology` would
+    return — no follow-up call is needed.
 
     Matching is case-insensitive substring over both the acronym and the human-readable
     name. Ranking prefers exact acronym matches, then acronym/name prefix matches, then
@@ -194,21 +195,13 @@ def find_ontology(query: str, max_results: int = 20) -> list[OntologyTuple]:
 # ---------------------------------------------------------------------------
 # Tool: get_class
 #
-# Maps a known class IRI within a known ontology to the 5-tuple needed by
-# both `withClassValueConstraint(uri, source, label, prefLabel, type)` and
-# `withBranchValueConstraint(uri, source, acronym, name, maxDepth)`. The
-# `type` (ValueType enum) and `maxDepth` arguments are caller-supplied and
-# not derivable from BioPortal.
+# Maps a known class IRI within a known ontology to a canonical identification
+# tuple (class_iri, pref_label, label, ontology_acronym, ontology_name).
 # ---------------------------------------------------------------------------
 
 
 class ClassTuple(BaseModel):
-    """The fields needed by `withClassValueConstraint` and `withBranchValueConstraint`.
-
-    The CEDAR builders take additional caller-supplied arguments not present here:
-    `ValueType` (for `withClassValueConstraint`) and `maxDepth` (for
-    `withBranchValueConstraint`). Both are user-intent fields, not BioPortal data.
-    """
+    """Canonical identification of a class within a BioPortal ontology."""
 
     class_iri: str = Field(description="Canonical IRI for the class.")
     pref_label: str = Field(description="skos:prefLabel for the class.")
@@ -238,17 +231,10 @@ def _first_label_string(raw: object) -> str | None:
 
 @mcp.tool()
 def get_class(class_iri: str, ontology_acronym: str) -> ClassTuple:
-    """Resolves a class IRI within a BioPortal ontology to the 5-tuple needed by CEDAR.
+    """Resolves a class IRI within a BioPortal ontology to its canonical 5-tuple.
 
-    The returned tuple fills (uri, source=ontology_name, label, prefLabel, ...) for
-    `withClassValueConstraint`, and (uri, source=ontology_name, acronym, name=prefLabel, ...)
-    for `withBranchValueConstraint`. Two arguments those builders accept are NOT in this
-    tuple because they're user-intent fields:
-
-      - `ValueType` enum (e.g. ONTOLOGY_CLASS) for class constraints
-      - `maxDepth` integer for branch constraints
-
-    Use this when the caller already knows the class IRI (e.g. 'http://purl.obolibrary.org/obo/DOID_4').
+    Returns (class_iri, pref_label, label, ontology_acronym, ontology_name). Use this
+    when the caller already knows the class IRI (e.g. 'http://purl.obolibrary.org/obo/DOID_4').
     For free-text lookup (e.g. 'Disease in DOID'), use `find_class` instead.
 
     Two HTTP calls happen: one to the class endpoint, one to the ontology endpoint to
@@ -339,9 +325,8 @@ def find_class(
     returns the highest-ranking matches across the full corpus.
 
     The returned list is ordered by BioPortal's relevance score. Each hit carries
-    enough information to identify the class (IRI, label, source ontology); for
-    the full canonical 5-tuple needed by CEDAR's `withClassValueConstraint`, follow
-    up with `get_class(hit.class_iri, hit.ontology_acronym)`.
+    enough information to identify the class (IRI, label, source ontology). For
+    the full canonical 5-tuple, follow up with `get_class(hit.class_iri, hit.ontology_acronym)`.
 
     `max_results` is capped at 50 client-side; values above that are silently
     truncated to avoid flooding the orchestrating LLM's context with low-ranked
@@ -385,20 +370,18 @@ def find_class(
 # ---------------------------------------------------------------------------
 # Tool: get_value_set
 #
-# Maps a known value-set IRI within a known value-set collection to the
-# 4-tuple needed by CEDAR's `withValueSetValueConstraint(uri, vsCollection,
-# name, numTerms?)`. Value sets in BioPortal are classes within special
-# "value set collection" ontologies (e.g. CEDARVS, HRAVS).
+# Value sets in BioPortal are classes within special "value-set collection"
+# ontologies (e.g. CEDARVS, HRAVS). This tool maps a known value-set IRI
+# within a known collection to its canonical identification tuple.
 # ---------------------------------------------------------------------------
 
 
 class ValueSetTuple(BaseModel):
-    """The fields needed by `withValueSetValueConstraint(uri, vsCollection, name, numTerms?)`.
+    """Canonical identification of a value set within a BioPortal value-set collection.
 
     `num_terms` is best-effort: BioPortal's class endpoint doesn't always include a count,
     and paginating the descendants endpoint just to get a count is too expensive for a
-    single tool call. Returns None when the count isn't available cheaply; callers can
-    pass the 3-arg `withValueSetValueConstraint` overload in that case.
+    single tool call. Returns None when the count isn't available cheaply.
     """
 
     value_set_iri: str = Field(description="Canonical IRI for the value set.")
@@ -414,19 +397,17 @@ class ValueSetTuple(BaseModel):
 
 @mcp.tool()
 def get_value_set(value_set_iri: str, vs_collection: str) -> ValueSetTuple:
-    """Resolves a value-set IRI within a BioPortal value-set collection to the 4-tuple needed by CEDAR.
+    """Resolves a value-set IRI within a BioPortal value-set collection to its canonical 4-tuple.
 
-    The returned tuple fills (uri, vsCollection, name, numTerms?) for
-    `withValueSetValueConstraint`. Value sets in BioPortal are classes within special
-    "value set collection" ontologies (CEDARVS, HRAVS, etc.); the collection acronym
-    behaves like an ontology acronym in BioPortal's URL structure.
+    Returns (value_set_iri, vs_collection, name, num_terms?). Value sets in BioPortal are
+    classes within special "value-set collection" ontologies (CEDARVS, HRAVS, etc.); the
+    collection acronym behaves like an ontology acronym in BioPortal's URL structure.
 
     Use this when the caller already knows the value-set IRI. For free-text lookup,
     use `find_value_set` instead.
 
     `num_terms` is returned as None unless BioPortal cheaply exposes the count in its
-    class response. Callers who don't need the count can pass the 3-arg form of
-    `withValueSetValueConstraint`.
+    class response.
     """
     value_set_iri = _require_nonblank(value_set_iri, "value_set_iri")
     vs_collection = _require_nonblank(vs_collection, "vs_collection")
@@ -452,33 +433,28 @@ def get_value_set(value_set_iri: str, vs_collection: str) -> ValueSetTuple:
 # ---------------------------------------------------------------------------
 # Tool: find_value_set
 #
-# Free-text search for value sets across value-set-collection ontologies.
-# Mirrors find_class but scoped to the small handful of BioPortal ontologies
-# that hold CEDAR-style value sets (CEDARVS, HRAVS, etc.).
+# Free-text search for value sets within a specified value-set-collection
+# ontology. The caller must name the collection (e.g. 'CEDARVS', 'HRAVS') —
+# there is no presumed default, because BioPortal hosts value-set collections
+# for multiple downstream communities and presuming one would couple this
+# tool to a specific consumer.
 # ---------------------------------------------------------------------------
-
-
-# Default collections to search when the caller doesn't specify one. These are the
-# canonical CEDAR value-set collections; other community VS collections can be searched
-# explicitly via the `vs_collection` parameter.
-_DEFAULT_VS_COLLECTIONS = ("CEDARVS", "HRAVS")
 
 
 @mcp.tool()
 def find_value_set(
     query: str,
-    vs_collection: str | None = None,
+    vs_collection: str,
     max_results: int = 20,
 ) -> list[ValueSetTuple]:
-    """Free-text search for value sets, returning a ranked list of candidates.
+    """Free-text search for value sets within a named collection, returning a ranked list.
 
     Use this when the caller knows part of the value set's name (e.g. 'area unit')
     but not its IRI. For known-IRI lookup, use `get_value_set` directly.
 
-    When `vs_collection` is provided, the search is scoped to that single collection
-    (e.g. 'HRAVS', 'CEDARVS'). When omitted, BioPortal searches across a default set
-    of known CEDAR value-set collections (CEDARVS, HRAVS) — sufficient for most
-    common cases. Pass `vs_collection` explicitly for community-specific VS collections.
+    `vs_collection` is required — pass the acronym of the value-set-collection ontology
+    to search (e.g. 'CEDARVS', 'HRAVS'). The caller is expected to know which collection
+    is relevant for their domain; this MCP intentionally does not presume one.
 
     Each hit carries (value_set_iri, vs_collection, name, num_terms?) — the same shape
     as `get_value_set`'s return — but `num_terms` is reliably None for search hits
@@ -488,17 +464,12 @@ def find_value_set(
     `max_results` is capped at 50 client-side.
     """
     query = _require_nonblank(query, "query")
+    vs_collection = _require_nonblank(vs_collection, "vs_collection")
     capped_max = max(1, min(max_results, _MAX_SEARCH_RESULTS))
-
-    if vs_collection is not None:
-        # Explicit collection: validate and use as-is.
-        collections_param = _require_nonblank(vs_collection, "vs_collection")
-    else:
-        collections_param = ",".join(_DEFAULT_VS_COLLECTIONS)
 
     params: dict[str, str] = {
         "q": query,
-        "ontologies": collections_param,
+        "ontologies": vs_collection,
         "pagesize": str(capped_max),
     }
     payload = _bioportal_get("/search", params=params)

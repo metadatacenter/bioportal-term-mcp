@@ -7,13 +7,14 @@ Start with these, in order:
 2. **[DESIGN.md](./DESIGN.md)** — the architectural principles. Read this *before* adding
    tools, or you'll be tempted to put intelligence in the server that belongs in the
    orchestrating LLM.
-3. **[ROADMAP.md](./ROADMAP.md)** — what's done, what's next, what the relationship is
-   to other planned MCPs (especially the future `cedar-artifact-mcp`).
+3. **[ROADMAP.md](./ROADMAP.md)** — what's done, what's next.
 
 After those three, the code is self-explanatory. Patterns to mirror:
 
 - Each tool: input validation via `_require_nonblank`, HTTP via `_bioportal_get`,
   Pydantic `BaseModel` for output, descriptive docstring (the LLM reads it).
+- Tool docstrings and Pydantic Field descriptions must stay domain-agnostic. Do not
+  reference downstream consumers — see DESIGN.md Principle 1.
 - Each tool ships with: a happy-path mocked test, parametrized validation tests,
   error-path mocked tests, and one opt-in `@pytest.mark.live` test.
 - See `get_class` for the canonical pattern across all of these.

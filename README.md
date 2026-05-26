@@ -1,29 +1,26 @@
 # bioportal-term-mcp
 
 A focused [Model Context Protocol](https://modelcontextprotocol.io/) server that resolves
-free-text descriptions of [BioPortal](https://bioportal.bioontology.org/) ontologies, classes,
-and value sets into the canonical `(IRI, acronym, name, ...)` tuples required by the
-[CEDAR artifact library](https://github.com/metadatacenter/cedar-artifact-library)'s
-controlled-term-field builders.
+[BioPortal](https://bioportal.bioontology.org/) ontologies, classes, and value sets into
+canonical `(IRI, acronym, name, ...)` tuples — both by known identifier and by free-text
+search.
 
-Scope is deliberately narrow: this MCP exposes only what's needed to fill the arguments of
-the four CEDAR `ControlledTermField` constraint methods. It is not a general-purpose
-BioPortal client.
+Scope is deliberately narrow: the server exposes only term-resolution operations, returns
+typed tuples, and has no knowledge of any downstream consumer. Tools designed for specific
+domains (metadata templates, export pipelines, form generators, etc.) should run as
+separate MCP servers that consume this one's output.
 
 ## Tools
 
-Six tools, each mapping to a piece of the CEDAR controlled-term-field API:
+Six tools across three resource types and two access modes:
 
-| Tool | Fills builder method | Status |
-|---|---|---|
-| `get_ontology(acronym)` | `withOntologyValueConstraint(uri, acronym, name)` | implemented |
-| `get_class(class_iri, ontology_acronym)` | `withClassValueConstraint(...)` / `withBranchValueConstraint(...)` | implemented |
-| `get_value_set(value_set_iri, vs_collection)` | `withValueSetValueConstraint(...)` | implemented |
-| `find_class(query, ontology_acronym?)` | (free-text variant of `get_class`) | implemented |
-| `find_ontology(query)` | (free-text variant of `get_ontology`) | implemented |
-| `find_value_set(query, vs_collection?)` | (free-text variant of `get_value_set`) | implemented |
+|              | known identifier                              | free-text search                              |
+|---           |---                                            |---                                            |
+| **ontology** | `get_ontology(acronym)`                       | `find_ontology(query)`                        |
+| **class**    | `get_class(class_iri, ontology_acronym)`      | `find_class(query, ontology_acronym?)`        |
+| **value set**| `get_value_set(value_set_iri, vs_collection)` | `find_value_set(query, vs_collection)`        |
 
-A diagnostic `ping(message)` tool is also exposed for round-trip verification.
+Plus a diagnostic `ping(message)` tool for round-trip verification.
 
 ## Requirements
 

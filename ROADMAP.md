@@ -5,74 +5,31 @@ The work plan and status of `bioportal-term-mcp`. See [DESIGN.md](./DESIGN.md) f
 
 ## Tool status
 
-Six tools planned, each mapped to a piece of the CEDAR controlled-term-field builder API.
-Implementation status as of writing:
+Six tools across three resource types and two access modes:
 
-| Tool | Fills builder method | Status |
-|---|---|---|
-| `get_ontology(acronym)` | `withOntologyValueConstraint(uri, acronym, name)` | done |
-| `get_class(class_iri, ontology_acronym)` | `withClassValueConstraint(...)` / `withBranchValueConstraint(...)` | done |
-| `get_value_set(value_set_iri, vs_collection)` | `withValueSetValueConstraint(...)` | done |
-| `find_class(query, ontology_acronym?)` | (free-text variant of `get_class`) | done |
-| `find_ontology(query)` | (free-text variant of `get_ontology`) | done |
-| `find_value_set(query, vs_collection?)` | (free-text variant of `get_value_set`) | done |
+|              | known identifier                              | free-text search                       |
+|---           |---                                            |---                                     |
+| **ontology** | `get_ontology(acronym)`                       | `find_ontology(query)`                 |
+| **class**    | `get_class(class_iri, ontology_acronym)`      | `find_class(query, ontology_acronym?)` |
+| **value set**| `get_value_set(value_set_iri, vs_collection)` | `find_value_set(query, vs_collection)` |
 
-Plus `ping(message)` for diagnostics.
+All six implemented. Plus `ping(message)` for diagnostics.
 
-## Build order, with rationale
+## Polish (none urgent)
 
-All six tools done. Subsequent work is polish (caching, more sophisticated input
-validation, possibly async HTTP) and any new tool variants the orchestrating LLM
-turns out to need in practice.
-
-After all six exist, polish becomes worth doing systematically: add an HTTP cache layer
-in `_bioportal_get` (TTL ~5 min), add an `_require_iri` validator for IRI-input tools,
-maybe revisit async if latency matters.
-
-## Known unimplemented patterns
-
-These would be nice but aren't blocking:
+Worth doing when motivation hits:
 
 - **Result caching.** Every tool currently hits BioPortal on every call. Same ontology
   looked up 5 times in one session = 5 HTTP calls. A TTL cache in `_bioportal_get` would
   fix this transparently. Easy to add when needed.
-- **IRI input validation.** `get_class` and (future) `get_value_set` take IRIs but only
-  check non-blank. A real URI parse-and-validate would catch typos client-side. Add an
-  `_require_iri(value, field_name)` helper when implementing the value-set tool.
-- **Find-tool pagination.** The `find_*` tools as designed return a single ranked page.
-  BioPortal paginates by default; we'll request `pagesize=20-50` and let the orchestrating
-  LLM ask for refinement rather than dumping pages.
+- **IRI input validation.** `get_class` and `get_value_set` take IRIs but only check
+  non-blank. A real URI parse-and-validate would catch typos client-side. Add an
+  `_require_iri(value, field_name)` helper.
+- **Find-tool pagination.** The `find_*` tools return a single ranked page. If callers
+  need second-page results, expose `page` / `offset` parameters.
+- **Async HTTP.** Only if latency becomes a real concern. Right now it doesn't.
 
-## The bigger picture: this MCP plus its planned companion
-
-This server is one half of a two-server architecture. The other half, `cedar-artifact-mcp`,
-will:
-
-- Expose the CEDAR artifact library's builders as tools (`create_template`, `add_field`,
-  `add_ontology_constraint`, `validate`, `serialize`, etc.).
-- Consume the IRI/acronym/name tuples that this server resolves.
-- Validate via the library's readers.
-
-The orchestrating LLM chains them: user describes a template in English → calls into this
-MCP to resolve names → calls into `cedar-artifact-mcp` to build the artifact → validate →
-return YAML/JSON.
-
-**Why this MCP comes first**: it's independent of the CEDAR model evolution. The
-`cedar-artifact-mcp` should wait until the CEDAR model lands its planned changes
-(template/element merger), so it can target the *new* library and avoid a rewrite.
-
-## Out of scope (do not add)
-
-- **Anything that interprets natural language inside a tool.** See DESIGN.md Principle 1.
-- **Generic BioPortal browsing / hierarchy walking.** This server is scoped to resolving
-  terms for CEDAR controlled-term fields. "List children of class X" or "show me the
-  ontology tree" don't belong here — BioPortal's web UI exists for that.
-- **Support for non-BioPortal terminology servers.** If we ever need OLS or a private
-  server, that's a separate MCP, not parameters here. See DESIGN.md Principle 3.
-- **Server-side authentication beyond the BioPortal API key.** Single-key, single-tenant.
-  If this ever needs multi-tenant auth, the deployment story changes substantially.
-
-## Testing and CI (also not yet)
+## CI (also not yet)
 
 No CI is wired up. Worth adding eventually:
 
@@ -80,20 +37,33 @@ No CI is wired up. Worth adding eventually:
 - A nightly cron running `uv run pytest -m live` to catch BioPortal shape drift early.
 - Both before publishing to PyPI, if that's ever wanted.
 
+## Out of scope (do not add)
+
+- **Anything that interprets natural language inside a tool.** See DESIGN.md Principle 2.
+- **Knowledge of downstream consumers.** Tool docstrings, Field descriptions, parameter
+  names, and defaults must stay domain-agnostic. See DESIGN.md Principle 1.
+- **Generic BioPortal browsing / hierarchy walking.** This server is scoped to identifier
+  resolution. "List all children of class X" or "show me the ontology tree" don't belong
+  here — BioPortal's web UI exists for that.
+- **Support for non-BioPortal terminology servers.** If a use case calls for OLS or a
+  private server, that's a separate MCP, not parameters added here. See DESIGN.md
+  Principle 4.
+- **Server-side authentication beyond the BioPortal API key.** Single-key, single-tenant.
+  If multi-tenant auth ever becomes needed, the deployment story changes substantially.
+
 ## Decisions made along the way
 
-Recorded here so they don't get relitigated in future sessions:
+Recorded here so they don't get relitigated:
 
 - **Python, not Java**, for this MCP. Anthropic's Python MCP SDK is the most mature; HTTP
-  passthrough work doesn't benefit from JVM-locality. The artifact MCP will probably go
-  Java for in-process library access.
+  passthrough work doesn't benefit from JVM-locality.
 - **`uv` as the package manager**, not pip or Poetry. Single binary, lockfile, fast.
-- **Sync `httpx`**, not async. Simpler; latency hasn't been an issue. Revisit if it
-  becomes one.
+- **Sync `httpx`**, not async. Simpler; latency hasn't been an issue.
 - **`respx` for HTTP mocking**, not unittest.mock patches. respx mocks at the transport
   layer (correct level) and gives readable request/response assertions.
 - **Pydantic `BaseModel`** for outputs, not `TypedDict` or raw `dict`. The Field
   descriptions become part of the LLM-visible tool schema.
-- **BSD-2-Clause license** (Stanford), to match the rest of the CEDAR ecosystem.
-- **One server, one repo.** Even though the codebase is small, separate repo because:
-  reusable beyond CEDAR, separate release cadence, no model-version coupling.
+- **BSD-2-Clause license**, matching the conventions of the project hosting the repo.
+- **One server, one repo.** Reusable across consumers, with its own release cadence.
+- **`find_value_set` requires `vs_collection` explicitly.** No presumed default list, so
+  the server doesn't take an opinion about which consumer's value-set collections matter.
