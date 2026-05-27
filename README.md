@@ -233,15 +233,11 @@ get_value_set(value_set_iri: str, vs_collection: str) -> ValueSetTuple
 ```
 
 Resolves a known value-set IRI within a named value-set collection to its canonical
-4-tuple: `(value_set_iri, vs_collection, name, num_terms?)`.
+triple: `(value_set_iri, vs_collection, name)`.
 
 Value sets in BioPortal are classes within special "value-set collection" ontologies
 (e.g. `CEDARVS`, `HRAVS`); the collection acronym behaves like an ontology acronym in
 BioPortal's URL structure.
-
-`num_terms` is best-effort: returned when BioPortal cheaply exposes a `numChildren` field
-on the class response, `None` otherwise. Paginating the descendants endpoint just to get a
-count is too expensive for a single tool call.
 
 **When to use.** The caller has the value-set IRI and knows which collection contains it.
 
@@ -262,8 +258,7 @@ Output:
 {
   "value_set_iri": "https://purl.humanatlas.io/vocab/hravs#HRAVS_1000161",
   "vs_collection": "HRAVS",
-  "name": "Area unit",
-  "num_terms": null
+  "name": "Area unit"
 }
 ```
 
@@ -282,10 +277,6 @@ candidates.
 `CEDARVS`, `HRAVS`). The server intentionally does not presume a default, because BioPortal
 hosts value-set collections for multiple downstream communities and choosing one would
 couple this tool to a specific consumer.
-
-`num_terms` is reliably `None` for search hits (BioPortal's `/search` response doesn't
-include term counts). Callers needing the count follow up with `get_value_set` on the
-chosen hit.
 
 **When to use.** The caller knows part of the value set's name but not its IRI, and knows
 which value-set collection is relevant for their domain.
@@ -307,8 +298,7 @@ Output:
   {
     "value_set_iri": "https://purl.humanatlas.io/vocab/hravs#HRAVS_1000161",
     "vs_collection": "HRAVS",
-    "name": "Area unit",
-    "num_terms": null
+    "name": "Area unit"
   }
 ]
 ```

@@ -377,37 +377,25 @@ def find_class(
 
 
 class ValueSetTuple(BaseModel):
-    """Canonical identification of a value set within a BioPortal value-set collection.
-
-    `num_terms` is best-effort: BioPortal's class endpoint doesn't always include a count,
-    and paginating the descendants endpoint just to get a count is too expensive for a
-    single tool call. Returns None when the count isn't available cheaply.
-    """
+    """Canonical identification of a value set within a BioPortal value-set collection."""
 
     value_set_iri: str = Field(description="Canonical IRI for the value set.")
     vs_collection: str = Field(
         description="Acronym of the value-set collection ontology, e.g. 'CEDARVS' or 'HRAVS'."
     )
     name: str = Field(description="Human-readable name of the value set (skos:prefLabel).")
-    num_terms: int | None = Field(
-        default=None,
-        description="Number of terms in the value set, if cheaply available. None otherwise.",
-    )
 
 
 @mcp.tool()
 def get_value_set(value_set_iri: str, vs_collection: str) -> ValueSetTuple:
-    """Resolves a value-set IRI within a BioPortal value-set collection to its canonical 4-tuple.
+    """Resolves a value-set IRI within a BioPortal value-set collection to its canonical triple.
 
-    Returns (value_set_iri, vs_collection, name, num_terms?). Value sets in BioPortal are
-    classes within special "value-set collection" ontologies (CEDARVS, HRAVS, etc.); the
+    Returns (value_set_iri, vs_collection, name). Value sets in BioPortal are classes
+    within special "value-set collection" ontologies (CEDARVS, HRAVS, etc.); the
     collection acronym behaves like an ontology acronym in BioPortal's URL structure.
 
     Use this when the caller already knows the value-set IRI. For free-text lookup,
     use `find_value_set` instead.
-
-    `num_terms` is returned as None unless BioPortal cheaply exposes the count in its
-    class response.
     """
     value_set_iri = _require_nonblank(value_set_iri, "value_set_iri")
     vs_collection = _require_nonblank(vs_collection, "vs_collection")
@@ -417,16 +405,11 @@ def get_value_set(value_set_iri: str, vs_collection: str) -> ValueSetTuple:
     payload = _bioportal_get(f"/ontologies/{vs_collection}/classes/{encoded_iri}")
 
     name = payload.get("prefLabel") or payload["@id"]
-    # Some BioPortal responses expose a count under various keys. Be defensive: any
-    # integer-typed field hinting at a count is acceptable; otherwise leave as None.
-    raw_count = payload.get("numChildren")
-    num_terms = raw_count if isinstance(raw_count, int) else None
 
     return ValueSetTuple(
         value_set_iri=payload["@id"],
         vs_collection=vs_collection,
         name=name,
-        num_terms=num_terms,
     )
 
 
@@ -456,10 +439,8 @@ def find_value_set(
     to search (e.g. 'CEDARVS', 'HRAVS'). The caller is expected to know which collection
     is relevant for their domain; this MCP intentionally does not presume one.
 
-    Each hit carries (value_set_iri, vs_collection, name, num_terms?) — the same shape
-    as `get_value_set`'s return — but `num_terms` is reliably None for search hits
-    (BioPortal's search response doesn't include term counts). Callers needing the
-    count can follow up with `get_value_set` on the chosen hit.
+    Each hit carries (value_set_iri, vs_collection, name) — the same shape as
+    `get_value_set`'s return.
 
     `max_results` is capped at 50 client-side.
     """
@@ -487,7 +468,6 @@ def find_value_set(
                 value_set_iri=entry["@id"],
                 vs_collection=acronym,
                 name=name,
-                num_terms=None,  # not present in /search responses
             )
         )
 

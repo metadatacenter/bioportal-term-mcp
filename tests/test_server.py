@@ -821,8 +821,6 @@ class TestFindValueSetHappyPath:
         assert results[0].value_set_iri == "https://purl.humanatlas.io/vocab/hravs#HRAVS_1000161"
         assert results[0].vs_collection == "HRAVS"
         assert results[0].name == "Area unit"
-        # /search responses don't include child counts; always None for search hits.
-        assert results[0].num_terms is None
 
     @respx.mock
     def test_vs_collection_scopes_the_search(self, api_key: None):
@@ -953,7 +951,6 @@ class TestGetValueSetHappyPath:
         assert result.value_set_iri == HRAVS_AREA_UNIT_IRI
         assert result.vs_collection == "HRAVS"
         assert result.name == "Area unit"
-        assert result.num_terms == 40
 
     @respx.mock
     def test_url_encodes_value_set_iri_correctly(self, api_key: None):
@@ -969,45 +966,6 @@ class TestGetValueSetHappyPath:
         get_value_set(HRAVS_AREA_UNIT_IRI, "HRAVS")
 
         assert route.called
-
-    @respx.mock
-    def test_num_terms_is_none_when_absent(self, api_key: None):
-        # BioPortal often omits a count from the class endpoint. The tool must still
-        # return a usable tuple; num_terms is documented as best-effort / Optional.
-        respx.get(
-            f"https://data.bioontology.org/ontologies/HRAVS/classes/{HRAVS_AREA_UNIT_IRI_ENCODED}"
-        ).mock(
-            return_value=Response(
-                200,
-                json={"@id": HRAVS_AREA_UNIT_IRI, "prefLabel": "Area unit"},
-            )
-        )
-
-        result = get_value_set(HRAVS_AREA_UNIT_IRI, "HRAVS")
-
-        assert result.num_terms is None
-        assert result.name == "Area unit"
-
-    @respx.mock
-    def test_num_terms_is_none_when_non_integer(self, api_key: None):
-        # Defensive: if BioPortal ever returns a non-int for numChildren (string, null,
-        # list), the tool falls back to None rather than crashing.
-        respx.get(
-            f"https://data.bioontology.org/ontologies/HRAVS/classes/{HRAVS_AREA_UNIT_IRI_ENCODED}"
-        ).mock(
-            return_value=Response(
-                200,
-                json={
-                    "@id": HRAVS_AREA_UNIT_IRI,
-                    "prefLabel": "Area unit",
-                    "numChildren": "forty",
-                },
-            )
-        )
-
-        result = get_value_set(HRAVS_AREA_UNIT_IRI, "HRAVS")
-
-        assert result.num_terms is None
 
 
 class TestGetValueSetValidation:
