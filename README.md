@@ -103,23 +103,6 @@ Each tool is detailed below with signature, motivation, and a concrete example.
 
 ---
 
-### `ping(message)`
-
-```python
-ping(message: str) -> str
-```
-
-Diagnostic round-trip. Echoes `pong: <message>` back. Useful for verifying the MCP server
-is reachable from a client, with no BioPortal API call involved.
-
-**Example**
-
-| Input | Output |
-|---|---|
-| `message="hello"` | `"pong: hello"` |
-
----
-
 ### `get_ontology(acronym)`
 
 ```python
@@ -381,6 +364,23 @@ Output:
   }
 ]
 ```
+
+---
+
+### `ping(message)`
+
+```python
+ping(message: str) -> str
+```
+
+Diagnostic round-trip. Echoes `pong: <message>` back. Useful for verifying the
+MCP server is reachable from a client, with no BioPortal API call involved.
+
+**Example**
+
+| Input | Output |
+|---|---|
+| `message="hello"` | `"pong: hello"` |
 
 ---
 
