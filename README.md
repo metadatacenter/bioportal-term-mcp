@@ -1,14 +1,93 @@
 # bioportal-term-mcp
 
-A focused [Model Context Protocol](https://modelcontextprotocol.io/) server that resolves
-[BioPortal](https://bioportal.bioontology.org/) ontologies, classes, and value sets into
-canonical `(IRI, acronym, name, ...)` tuples — both by known identifier and by free-text
-search.
+[BioPortal](https://bioportal.bioontology.org/) is the largest open repository
+of biomedical (and increasingly cross-domain) ontologies — over 1,000
+ontologies and value sets covering diseases, anatomy, phenotypes, chemicals,
+publication types, units of measure, and more. The point of working with an
+ontology rather than free text is the **IRI**: a stable identifier that says
+"this thing is *this* concept in *this* ontology", with a canonical human
+label attached, so the data is checkable, queryable, and interoperable rather
+than a string somebody has to interpret.
 
-Scope is deliberately narrow: the server exposes only term-resolution operations, returns
-typed tuples, and has no knowledge of any downstream consumer. Tools designed for specific
-domains (metadata templates, export pipelines, form generators, etc.) should run as
-separate MCP servers that consume this one's output.
+LLMs are surprisingly bad at IRIs. They'll happily invent
+`http://purl.obolibrary.org/obo/DOID_10923` and have it be wrong by one
+digit, or pick a deprecated parent class, or confuse acronyms across
+ontologies. The fix is to make BioPortal lookup a first-class capability the
+LLM can actually call — not paste-from-memory.
+
+This is a [Model Context Protocol](https://modelcontextprotocol.io/) server
+that exposes BioPortal as six MCP tools. Two access modes (free-text
+**search** and exact **lookup-by-identifier**), three resource types
+(ontologies, classes, value sets), plus a `ping`. Each tool returns a
+canonical typed tuple — `(IRI, acronym, name, ...)` — designed to be
+threaded into whatever the LLM does next: building a metadata schema,
+populating an instance, annotating a dataset, generating a form. The MCP
+itself does none of that downstream work. Tools designed for specific
+domains should run as **separate MCP servers** that consume this one's
+output; couplings flow downstream, not upstream (see
+[DESIGN.md Principle 1](./DESIGN.md)).
+
+## Example workflow
+
+A typical session — natural-language prompts the user gives the LLM, which
+the LLM translates into MCP tool calls. The pattern is **discovery →
+canonicalization → hand-off**: find candidates with `find_*`, pin a specific
+one with `get_*` (or just take the top `find_*` hit when it's already a full
+tuple), and pass the canonical record on to whatever comes next.
+
+*Find an ontology covering human diseases.*
+
+```json
+[
+  { "acronym": "DOID",  "name": "Human Disease Ontology",   "ontology_iri": "https://data.bioontology.org/ontologies/DOID" },
+  { "acronym": "MONDO", "name": "Mondo Disease Ontology",   "ontology_iri": "https://data.bioontology.org/ontologies/MONDO" },
+  { "acronym": "HPO",   "name": "Human Phenotype Ontology", "ontology_iri": "https://data.bioontology.org/ontologies/HPO" }
+]
+```
+
+The LLM calls `find_ontology("human disease")` and presents the ranked
+candidates. The user (or the LLM, depending on the context) picks `DOID`.
+
+*Find sickle cell anemia in DOID.*
+
+```json
+[
+  {
+    "class_iri": "http://purl.obolibrary.org/obo/DOID_10923",
+    "pref_label": "sickle cell anemia",
+    "label": "sickle cell anemia",
+    "ontology_acronym": "DOID",
+    "ontology_name": "Human Disease Ontology"
+  }
+]
+```
+
+The LLM calls `find_class("sickle cell anemia", "DOID")`. `DOID_10923`
+comes back as the top hit with the canonical IRI, both labels, and the
+ontology metadata already populated — no separate `get_class` round-trip
+needed for this case.
+
+*Confirm what `DOID_10923` is.*
+
+```json
+{
+  "class_iri": "http://purl.obolibrary.org/obo/DOID_10923",
+  "pref_label": "sickle cell anemia",
+  "label": "sickle cell anemia",
+  "ontology_acronym": "DOID",
+  "ontology_name": "Human Disease Ontology"
+}
+```
+
+When the LLM already has an IRI from a prior conversation, a saved
+annotation, or an external system, it calls `get_class` to verify and fetch
+the canonical record. This is the "I trust this IRI but I want the current
+labels" path.
+
+The canonical tuple is now ready to hand to whatever downstream MCP or tool
+the orchestrating LLM is also driving — a metadata-template builder, an
+annotation pipeline, a form generator. Each tool call is stateless; the
+orchestrating LLM holds the context between calls.
 
 ## Tools
 
@@ -304,18 +383,6 @@ Output:
 ```
 
 ---
-
-## Chaining
-
-The intended orchestration pattern is to use `find_*` for discovery and `get_*` for
-canonicalization. Example flow for "find an ontology by description, then resolve a class
-within it":
-
-1. `find_ontology("human disease")` → caller (orchestrating LLM) picks `DOID`
-2. `find_class("diabetes", "DOID")` → caller picks one hit
-3. `get_class(picked_hit.class_iri, "DOID")` → full canonical tuple
-
-Each tool call is stateless; the caller threads identifiers from one call to the next.
 
 ## Requirements
 
