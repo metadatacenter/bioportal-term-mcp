@@ -66,7 +66,23 @@ def _require_nonblank(value: str, field_name: str) -> str:
     return stripped
 
 
-mcp = FastMCP("bioportal-term-mcp")
+SERVER_NAME = "bioportal-term-mcp"
+
+mcp = FastMCP(SERVER_NAME)
+
+
+def _server_version() -> str:
+    """Reads the installed package version, falling back to "unknown" when the package metadata
+    is unavailable (e.g. running from a source tree that was never installed)."""
+    try:
+        from importlib.metadata import PackageNotFoundError, version
+
+        return version(SERVER_NAME)
+    except PackageNotFoundError:
+        return "unknown"
+
+
+SERVER_VERSION = _server_version()
 
 
 # ---------------------------------------------------------------------------
@@ -75,8 +91,9 @@ mcp = FastMCP("bioportal-term-mcp")
 
 @mcp.tool()
 def ping(message: str) -> str:
-    """Echoes the message back. Used to verify the MCP server is reachable."""
-    return f"pong: {message}"
+    """Echoes the message back, with the server name and version appended. Used to verify the MCP
+    server is reachable and to report which build is running."""
+    return f"pong: {message} ({SERVER_NAME} {SERVER_VERSION})"
 
 
 # ---------------------------------------------------------------------------

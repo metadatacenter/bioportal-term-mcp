@@ -68,7 +68,7 @@ class TestRequireNonblank:
 
 class TestPing:
     def test_echoes_the_input_message(self):
-        assert ping("hello") == "pong: hello"
+        assert ping("hello").startswith("pong: hello (")
 
 
 # ---------------------------------------------------------------------------
