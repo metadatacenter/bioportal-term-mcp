@@ -1,6 +1,6 @@
 [project]
 name = "bioportal-term-mcp"
-version = "0.1.15"
+version = "0.1.16"
 description = "MCP server that resolves BioPortal ontologies, classes, and value sets into canonical (IRI, acronym, name, ...) tuples, by known identifier or free-text search. Domain-agnostic: consumers map the returned tuples into their own data models."
 readme = "README.md"
 license = "BSD-2-Clause"
