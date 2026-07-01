@@ -1,11 +1,11 @@
 # bioportal-term-mcp
 
 [BioPortal](https://bioportal.bioontology.org/) is the largest open repository
-of biomedical (and increasingly cross-domain) ontologies — over 1,000
+of biomedical (and increasingly cross-domain) ontologies. It contains over 1,000
 ontologies and value sets covering diseases, anatomy, phenotypes, chemicals,
 publication types, units of measure, and more. The point of working with an
 ontology rather than free text is the **IRI**: a stable identifier that says
-"this thing is *this* concept in *this* ontology", with a canonical human
+"this thing is *this* concept in *this* ontology", with a human
 label attached, so the data is checkable, queryable, and interoperable rather
 than a string somebody has to interpret.
 
@@ -16,7 +16,7 @@ ontologies. The fix is to make BioPortal lookup a first-class capability the
 LLM can actually call — not paste-from-memory.
 
 This is a [Model Context Protocol](https://modelcontextprotocol.io/) server
-that exposes BioPortal as six MCP tools. Two access modes (free-text
+that exposes BioPortal a core part of BioPortal as six MCP tools. These tools provide two access modes (free-text
 **search** and exact **lookup-by-identifier**), three resource types
 (ontologies, classes, value sets), plus a `ping`. Each tool returns a
 canonical typed tuple — `(IRI, acronym, name, ...)` — designed to be
