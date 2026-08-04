@@ -37,6 +37,19 @@ No CI is wired up. Worth adding eventually:
 - A nightly cron running `uv run pytest -m live` to catch BioPortal shape drift early.
 - Both before publishing to PyPI, if that's ever wanted.
 
+## Known limitation
+
+`find_class` ranks matches by BioPortal's string relevance and `find_ontology` by
+acronym/name overlap. Both surface candidates; neither judges which term best fits a field.
+Choosing well (the right ontology, the right granularity, the intended sense) is a separate
+problem this server does not solve. Several related terms searched one at a time can each
+resolve to whichever ontology matched lexically rather than to one coherent set.
+
+The fix is a recommender in the loop: BioPortal's Recommender service, or an LLM-scored
+shortlist over these candidates, scoring ontologies and terms for the whole field at once.
+That belongs in a separate component, not ranking heuristics bolted onto identifier
+resolution here (same reasoning as the OLS note under Out of scope).
+
 ## Out of scope (do not add)
 
 - **Anything that interprets natural language inside a tool.** See DESIGN.md Principle 2.
