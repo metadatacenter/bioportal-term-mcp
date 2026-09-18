@@ -7,7 +7,8 @@ Start with these, in order:
 2. **[DESIGN.md](./DESIGN.md)** — the architectural principles. Read this *before* adding
    tools, or you'll be tempted to put intelligence in the server that belongs in the
    orchestrating LLM.
-3. **[ROADMAP.md](./ROADMAP.md)** — what's done, what's next.
+3. **[CEDAR MCP Servers Roadmap](https://github.com/metadatacenter/cedar-development/blob/develop/ops/MCP-ROADMAP.md)** — what is left to do, here and across the
+   four servers.
 
 After those three, the code is self-explanatory. Patterns to mirror:
 

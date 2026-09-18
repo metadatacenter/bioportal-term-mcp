@@ -139,3 +139,27 @@ a sign the abstraction needs adjusting, not that the tool should reach into http
 - **Result caching**: nothing is cached today. If BioPortal rate-limiting becomes a problem
   or the same ontologies are looked up repeatedly within a session, a simple TTL cache in
   `_bioportal_get` is the right place to add it. Stays invisible to tools.
+
+## Two more boundaries
+
+- **Generic BioPortal browsing.** This server resolves identifiers. Listing a class's children or
+  walking an ontology tree does not belong here; BioPortal's own web interface exists for that.
+- **Authentication beyond the BioPortal API key.** Single key, single tenant. Multi-tenant auth
+  would change the deployment story substantially and is a different server.
+
+## Decisions Made Along the Way
+
+Recorded so they are not relitigated.
+
+- **Python, not Java.** Anthropic's Python MCP SDK is the most mature, and HTTP passthrough work
+  gains nothing from JVM locality.
+- **`uv` as the package manager**, over pip or Poetry: one binary, a lockfile, and speed.
+- **Sync `httpx`**, not async. Simpler, and latency has not been an issue.
+- **`respx` for HTTP mocking**, not `unittest.mock` patches. It mocks at the transport layer,
+  which is the right level, and gives readable request and response assertions.
+- **Pydantic `BaseModel`** for outputs, over `TypedDict` or a raw dict, because the Field
+  descriptions become part of the LLM-visible tool schema.
+- **BSD-2-Clause**, matching the conventions of the project that hosts the repository.
+- **One server, one repository**, reusable across consumers and with its own release cadence.
+- **`find_value_set` requires `vs_collection`.** With no presumed default list, the server takes
+  no opinion about which consumer's value-set collections matter.
