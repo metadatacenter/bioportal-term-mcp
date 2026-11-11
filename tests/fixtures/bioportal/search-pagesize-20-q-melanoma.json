@@ -1,0 +1,966 @@
+{
+  "recorded_on": "2026-11-11",
+  "request": {
+    "method": "GET",
+    "url": "https://data.bioontology.org/search?q=melanoma&pagesize=20"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "page": 1,
+      "pageCount": 315,
+      "totalCount": 6298,
+      "prevPage": null,
+      "nextPage": 2,
+      "links": {
+        "nextPage": "https://data.bioontology.org/search?q=melanoma&pagesize=20&page=2",
+        "prevPage": null
+      },
+      "collection": [
+        {
+          "prefLabel": "Melanoma",
+          "synonym": [
+            "Malignant Melanomas",
+            "Melanomas",
+            "Melanomas, Malignant",
+            "Melanoma, Malignant",
+            "Malignant Melanoma"
+          ],
+          "definition": [
+            "A malignant neoplasm derived from cells that are capable of forming melanin, which may occur in the skin of any part of the body, in the eye, or, rarely, in the mucous membranes of the genitalia, anus, oral cavity, or other sites. It occurs mostly in adults and may originate de novo or from a pigmented nevus or malignant lentigo. Melanomas frequently metastasize widely, and the regional lymph nodes, liver, lungs, and brain are likely to be involved. The incidence of malignant skin melanomas is rising rapidly in all parts of the world. (Stedman, 25th ed; from Rook et al., Textbook of Dermatology, 4th ed, p2445)"
+          ],
+          "cui": [
+            "C0025202"
+          ],
+          "semanticType": [
+            "T191"
+          ],
+          "obsolete": false,
+          "matchType": "prefLabel",
+          "ontologyType": "ONTOLOGY",
+          "@id": "http://purl.bioontology.org/ontology/MESH/D008545",
+          "@type": "http://www.w3.org/2002/07/owl#Class",
+          "links": {
+            "self": "https://data.bioontology.org/ontologies/MESH/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FMESH%2FD008545",
+            "ontology": "https://data.bioontology.org/ontologies/MESH",
+            "children": "https://data.bioontology.org/ontologies/MESH/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FMESH%2FD008545/children",
+            "parents": "https://data.bioontology.org/ontologies/MESH/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FMESH%2FD008545/parents",
+            "descendants": "https://data.bioontology.org/ontologies/MESH/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FMESH%2FD008545/descendants",
+            "ancestors": "https://data.bioontology.org/ontologies/MESH/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FMESH%2FD008545/ancestors",
+            "instances": "https://data.bioontology.org/ontologies/MESH/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FMESH%2FD008545/instances",
+            "tree": "https://data.bioontology.org/ontologies/MESH/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FMESH%2FD008545/tree",
+            "notes": "https://data.bioontology.org/ontologies/MESH/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FMESH%2FD008545/notes",
+            "mappings": "https://data.bioontology.org/ontologies/MESH/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FMESH%2FD008545/mappings",
+            "ui": "http://bioportal.bioontology.org/ontologies/MESH?p=classes&conceptid=http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FMESH%2FD008545",
+            "@context": {
+              "self": "http://www.w3.org/2002/07/owl#Class",
+              "ontology": "http://data.bioontology.org/metadata/Ontology",
+              "children": "http://www.w3.org/2002/07/owl#Class",
+              "parents": "http://www.w3.org/2002/07/owl#Class",
+              "descendants": "http://www.w3.org/2002/07/owl#Class",
+              "ancestors": "http://www.w3.org/2002/07/owl#Class",
+              "instances": "http://data.bioontology.org/metadata/Instance",
+              "tree": "http://www.w3.org/2002/07/owl#Class",
+              "notes": "http://data.bioontology.org/metadata/Note",
+              "mappings": "http://data.bioontology.org/metadata/Mapping",
+              "ui": "http://www.w3.org/2002/07/owl#Class"
+            }
+          },
+          "@context": {
+            "@vocab": "http://data.bioontology.org/metadata/",
+            "prefLabel": "http://www.w3.org/2004/02/skos/core#prefLabel",
+            "synonym": "http://www.w3.org/2004/02/skos/core#altLabel",
+            "definition": "http://www.w3.org/2004/02/skos/core#definition",
+            "obsolete": "http://www.w3.org/2002/07/owl#deprecated",
+            "semanticType": "http://bioportal.bioontology.org/ontologies/umls/hasSTY",
+            "cui": "http://bioportal.bioontology.org/ontologies/umls/cui",
+            "@language": "en"
+          }
+        },
+        {
+          "prefLabel": "Melanoma",
+          "cui": [
+            "C0025202"
+          ],
+          "semanticType": [
+            "T191"
+          ],
+          "obsolete": false,
+          "matchType": "prefLabel",
+          "ontologyType": "ONTOLOGY",
+          "@id": "http://purl.bioontology.org/ontology/LNC/LA14279-6",
+          "@type": "http://www.w3.org/2002/07/owl#Class",
+          "links": {
+            "self": "https://data.bioontology.org/ontologies/LOINC/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FLNC%2FLA14279-6",
+            "ontology": "https://data.bioontology.org/ontologies/LOINC",
+            "children": "https://data.bioontology.org/ontologies/LOINC/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FLNC%2FLA14279-6/children",
+            "parents": "https://data.bioontology.org/ontologies/LOINC/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FLNC%2FLA14279-6/parents",
+            "descendants": "https://data.bioontology.org/ontologies/LOINC/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FLNC%2FLA14279-6/descendants",
+            "ancestors": "https://data.bioontology.org/ontologies/LOINC/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FLNC%2FLA14279-6/ancestors",
+            "instances": "https://data.bioontology.org/ontologies/LOINC/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FLNC%2FLA14279-6/instances",
+            "tree": "https://data.bioontology.org/ontologies/LOINC/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FLNC%2FLA14279-6/tree",
+            "notes": "https://data.bioontology.org/ontologies/LOINC/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FLNC%2FLA14279-6/notes",
+            "mappings": "https://data.bioontology.org/ontologies/LOINC/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FLNC%2FLA14279-6/mappings",
+            "ui": "http://bioportal.bioontology.org/ontologies/LOINC?p=classes&conceptid=http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FLNC%2FLA14279-6",
+            "@context": {
+              "self": "http://www.w3.org/2002/07/owl#Class",
+              "ontology": "http://data.bioontology.org/metadata/Ontology",
+              "children": "http://www.w3.org/2002/07/owl#Class",
+              "parents": "http://www.w3.org/2002/07/owl#Class",
+              "descendants": "http://www.w3.org/2002/07/owl#Class",
+              "ancestors": "http://www.w3.org/2002/07/owl#Class",
+              "instances": "http://data.bioontology.org/metadata/Instance",
+              "tree": "http://www.w3.org/2002/07/owl#Class",
+              "notes": "http://data.bioontology.org/metadata/Note",
+              "mappings": "http://data.bioontology.org/metadata/Mapping",
+              "ui": "http://www.w3.org/2002/07/owl#Class"
+            }
+          },
+          "@context": {
+            "@vocab": "http://data.bioontology.org/metadata/",
+            "prefLabel": "http://www.w3.org/2004/02/skos/core#prefLabel",
+            "obsolete": "http://www.w3.org/2002/07/owl#deprecated",
+            "semanticType": "http://bioportal.bioontology.org/ontologies/umls/hasSTY",
+            "cui": "http://bioportal.bioontology.org/ontologies/umls/cui",
+            "@language": "en"
+          }
+        },
+        {
+          "prefLabel": "Melanoma",
+          "cui": [
+            "C0025202"
+          ],
+          "semanticType": [
+            "T191"
+          ],
+          "obsolete": false,
+          "matchType": "prefLabel",
+          "ontologyType": "ONTOLOGY",
+          "@id": "http://purl.bioontology.org/ontology/OMIM/MTHU000127",
+          "@type": "http://www.w3.org/2002/07/owl#Class",
+          "links": {
+            "self": "https://data.bioontology.org/ontologies/OMIM/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FOMIM%2FMTHU000127",
+            "ontology": "https://data.bioontology.org/ontologies/OMIM",
+            "children": "https://data.bioontology.org/ontologies/OMIM/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FOMIM%2FMTHU000127/children",
+            "parents": "https://data.bioontology.org/ontologies/OMIM/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FOMIM%2FMTHU000127/parents",
+            "descendants": "https://data.bioontology.org/ontologies/OMIM/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FOMIM%2FMTHU000127/descendants",
+            "ancestors": "https://data.bioontology.org/ontologies/OMIM/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FOMIM%2FMTHU000127/ancestors",
+            "instances": "https://data.bioontology.org/ontologies/OMIM/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FOMIM%2FMTHU000127/instances",
+            "tree": "https://data.bioontology.org/ontologies/OMIM/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FOMIM%2FMTHU000127/tree",
+            "notes": "https://data.bioontology.org/ontologies/OMIM/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FOMIM%2FMTHU000127/notes",
+            "mappings": "https://data.bioontology.org/ontologies/OMIM/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FOMIM%2FMTHU000127/mappings",
+            "ui": "http://bioportal.bioontology.org/ontologies/OMIM?p=classes&conceptid=http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FOMIM%2FMTHU000127",
+            "@context": {
+              "self": "http://www.w3.org/2002/07/owl#Class",
+              "ontology": "http://data.bioontology.org/metadata/Ontology",
+              "children": "http://www.w3.org/2002/07/owl#Class",
+              "parents": "http://www.w3.org/2002/07/owl#Class",
+              "descendants": "http://www.w3.org/2002/07/owl#Class",
+              "ancestors": "http://www.w3.org/2002/07/owl#Class",
+              "instances": "http://data.bioontology.org/metadata/Instance",
+              "tree": "http://www.w3.org/2002/07/owl#Class",
+              "notes": "http://data.bioontology.org/metadata/Note",
+              "mappings": "http://data.bioontology.org/metadata/Mapping",
+              "ui": "http://www.w3.org/2002/07/owl#Class"
+            }
+          },
+          "@context": {
+            "@vocab": "http://data.bioontology.org/metadata/",
+            "prefLabel": "http://www.w3.org/2004/02/skos/core#prefLabel",
+            "obsolete": "http://www.w3.org/2002/07/owl#deprecated",
+            "semanticType": "http://bioportal.bioontology.org/ontologies/umls/hasSTY",
+            "cui": "http://bioportal.bioontology.org/ontologies/umls/cui",
+            "@language": "en"
+          }
+        },
+        {
+          "prefLabel": "Melanoma",
+          "synonym": [
+            "Melanoma, NOS",
+            "MELANOMA, MALIGNANT",
+            "Malignant Melanoma",
+            "Melanoma",
+            "melanoma"
+          ],
+          "definition": [
+            "A malignant, usually aggressive tumor composed of atypical, neoplastic melanocytes. Most often, melanomas arise in the skin (cutaneous melanomas) and include the following histologic subtypes: superficial spreading melanoma, nodular melanoma, acral lentiginous melanoma, and lentigo maligna melanoma. Cutaneous melanomas may arise from acquired or congenital melanocytic or dysplastic nevi. Melanomas may also arise in other anatomic sites including the gastrointestinal system, eye, urinary tract, and reproductive system. Melanomas frequently metastasize to lymph nodes, liver, lungs, and brain."
+          ],
+          "obsolete": false,
+          "matchType": "prefLabel",
+          "ontologyType": "ONTOLOGY",
+          "@id": "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C3224",
+          "@type": "http://www.w3.org/2002/07/owl#Class",
+          "links": {
+            "self": "https://data.bioontology.org/ontologies/NCIT/classes/http%3A%2F%2Fncicb.nci.nih.gov%2Fxml%2Fowl%2FEVS%2FThesaurus.owl%23C3224",
+            "ontology": "https://data.bioontology.org/ontologies/NCIT",
+            "children": "https://data.bioontology.org/ontologies/NCIT/classes/http%3A%2F%2Fncicb.nci.nih.gov%2Fxml%2Fowl%2FEVS%2FThesaurus.owl%23C3224/children",
+            "parents": "https://data.bioontology.org/ontologies/NCIT/classes/http%3A%2F%2Fncicb.nci.nih.gov%2Fxml%2Fowl%2FEVS%2FThesaurus.owl%23C3224/parents",
+            "descendants": "https://data.bioontology.org/ontologies/NCIT/classes/http%3A%2F%2Fncicb.nci.nih.gov%2Fxml%2Fowl%2FEVS%2FThesaurus.owl%23C3224/descendants",
+            "ancestors": "https://data.bioontology.org/ontologies/NCIT/classes/http%3A%2F%2Fncicb.nci.nih.gov%2Fxml%2Fowl%2FEVS%2FThesaurus.owl%23C3224/ancestors",
+            "instances": "https://data.bioontology.org/ontologies/NCIT/classes/http%3A%2F%2Fncicb.nci.nih.gov%2Fxml%2Fowl%2FEVS%2FThesaurus.owl%23C3224/instances",
+            "tree": "https://data.bioontology.org/ontologies/NCIT/classes/http%3A%2F%2Fncicb.nci.nih.gov%2Fxml%2Fowl%2FEVS%2FThesaurus.owl%23C3224/tree",
+            "notes": "https://data.bioontology.org/ontologies/NCIT/classes/http%3A%2F%2Fncicb.nci.nih.gov%2Fxml%2Fowl%2FEVS%2FThesaurus.owl%23C3224/notes",
+            "mappings": "https://data.bioontology.org/ontologies/NCIT/classes/http%3A%2F%2Fncicb.nci.nih.gov%2Fxml%2Fowl%2FEVS%2FThesaurus.owl%23C3224/mappings",
+            "ui": "http://bioportal.bioontology.org/ontologies/NCIT?p=classes&conceptid=http%3A%2F%2Fncicb.nci.nih.gov%2Fxml%2Fowl%2FEVS%2FThesaurus.owl%23C3224",
+            "@context": {
+              "self": "http://www.w3.org/2002/07/owl#Class",
+              "ontology": "http://data.bioontology.org/metadata/Ontology",
+              "children": "http://www.w3.org/2002/07/owl#Class",
+              "parents": "http://www.w3.org/2002/07/owl#Class",
+              "descendants": "http://www.w3.org/2002/07/owl#Class",
+              "ancestors": "http://www.w3.org/2002/07/owl#Class",
+              "instances": "http://data.bioontology.org/metadata/Instance",
+              "tree": "http://www.w3.org/2002/07/owl#Class",
+              "notes": "http://data.bioontology.org/metadata/Note",
+              "mappings": "http://data.bioontology.org/metadata/Mapping",
+              "ui": "http://www.w3.org/2002/07/owl#Class"
+            }
+          },
+          "@context": {
+            "@vocab": "http://data.bioontology.org/metadata/",
+            "prefLabel": "http://www.w3.org/2004/02/skos/core#prefLabel",
+            "synonym": "http://www.w3.org/2004/02/skos/core#altLabel",
+            "definition": "http://www.w3.org/2004/02/skos/core#definition",
+            "obsolete": "http://www.w3.org/2002/07/owl#deprecated",
+            "@language": "en"
+          }
+        },
+        {
+          "prefLabel": "melanoma",
+          "definition": [
+            "malignant neoplasm derived from cells that are capable of forming melanin, which may occur in the skin of any part of the body, in the eye, or, rarely, in the mucous membranes of the genitalia, anus, oral cavity, or other sites; occurring mostly in adults and may originate de novo or from a pigmented nevus or malignant lentigo; frequently metastasize widely, and the regional lymph nodes, liver, lungs, and brain are likely to be involved."
+          ],
+          "cui": [
+            "C0025202"
+          ],
+          "semanticType": [
+            "T191"
+          ],
+          "obsolete": false,
+          "matchType": "prefLabel",
+          "ontologyType": "ONTOLOGY",
+          "@id": "http://purl.bioontology.org/ontology/CSP/2020-2434",
+          "@type": "http://www.w3.org/2002/07/owl#Class",
+          "links": {
+            "self": "https://data.bioontology.org/ontologies/CRISP/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FCSP%2F2020-2434",
+            "ontology": "https://data.bioontology.org/ontologies/CRISP",
+            "children": "https://data.bioontology.org/ontologies/CRISP/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FCSP%2F2020-2434/children",
+            "parents": "https://data.bioontology.org/ontologies/CRISP/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FCSP%2F2020-2434/parents",
+            "descendants": "https://data.bioontology.org/ontologies/CRISP/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FCSP%2F2020-2434/descendants",
+            "ancestors": "https://data.bioontology.org/ontologies/CRISP/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FCSP%2F2020-2434/ancestors",
+            "instances": "https://data.bioontology.org/ontologies/CRISP/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FCSP%2F2020-2434/instances",
+            "tree": "https://data.bioontology.org/ontologies/CRISP/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FCSP%2F2020-2434/tree",
+            "notes": "https://data.bioontology.org/ontologies/CRISP/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FCSP%2F2020-2434/notes",
+            "mappings": "https://data.bioontology.org/ontologies/CRISP/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FCSP%2F2020-2434/mappings",
+            "ui": "http://bioportal.bioontology.org/ontologies/CRISP?p=classes&conceptid=http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FCSP%2F2020-2434",
+            "@context": {
+              "self": "http://www.w3.org/2002/07/owl#Class",
+              "ontology": "http://data.bioontology.org/metadata/Ontology",
+              "children": "http://www.w3.org/2002/07/owl#Class",
+              "parents": "http://www.w3.org/2002/07/owl#Class",
+              "descendants": "http://www.w3.org/2002/07/owl#Class",
+              "ancestors": "http://www.w3.org/2002/07/owl#Class",
+              "instances": "http://data.bioontology.org/metadata/Instance",
+              "tree": "http://www.w3.org/2002/07/owl#Class",
+              "notes": "http://data.bioontology.org/metadata/Note",
+              "mappings": "http://data.bioontology.org/metadata/Mapping",
+              "ui": "http://www.w3.org/2002/07/owl#Class"
+            }
+          },
+          "@context": {
+            "@vocab": "http://data.bioontology.org/metadata/",
+            "prefLabel": "http://www.w3.org/2004/02/skos/core#prefLabel",
+            "definition": "http://www.w3.org/2004/02/skos/core#definition",
+            "obsolete": "http://www.w3.org/2002/07/owl#deprecated",
+            "semanticType": "http://bioportal.bioontology.org/ontologies/umls/hasSTY",
+            "cui": "http://bioportal.bioontology.org/ontologies/umls/cui",
+            "@language": "en"
+          }
+        },
+        {
+          "prefLabel": "melanoma",
+          "synonym": [
+            "Skin cancer, melanoma",
+            "cutaneous melanoma",
+            "melanoma, cutaneous"
+          ],
+          "cui": [
+            "C0025202"
+          ],
+          "semanticType": [
+            "T191"
+          ],
+          "obsolete": false,
+          "matchType": "prefLabel",
+          "ontologyType": "ONTOLOGY",
+          "@id": "http://purl.bioontology.org/ontology/PDQ/CDR0000038833",
+          "@type": "http://www.w3.org/2002/07/owl#Class",
+          "links": {
+            "self": "https://data.bioontology.org/ontologies/PDQ/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FPDQ%2FCDR0000038833",
+            "ontology": "https://data.bioontology.org/ontologies/PDQ",
+            "children": "https://data.bioontology.org/ontologies/PDQ/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FPDQ%2FCDR0000038833/children",
+            "parents": "https://data.bioontology.org/ontologies/PDQ/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FPDQ%2FCDR0000038833/parents",
+            "descendants": "https://data.bioontology.org/ontologies/PDQ/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FPDQ%2FCDR0000038833/descendants",
+            "ancestors": "https://data.bioontology.org/ontologies/PDQ/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FPDQ%2FCDR0000038833/ancestors",
+            "instances": "https://data.bioontology.org/ontologies/PDQ/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FPDQ%2FCDR0000038833/instances",
+            "tree": "https://data.bioontology.org/ontologies/PDQ/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FPDQ%2FCDR0000038833/tree",
+            "notes": "https://data.bioontology.org/ontologies/PDQ/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FPDQ%2FCDR0000038833/notes",
+            "mappings": "https://data.bioontology.org/ontologies/PDQ/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FPDQ%2FCDR0000038833/mappings",
+            "ui": "http://bioportal.bioontology.org/ontologies/PDQ?p=classes&conceptid=http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FPDQ%2FCDR0000038833",
+            "@context": {
+              "self": "http://www.w3.org/2002/07/owl#Class",
+              "ontology": "http://data.bioontology.org/metadata/Ontology",
+              "children": "http://www.w3.org/2002/07/owl#Class",
+              "parents": "http://www.w3.org/2002/07/owl#Class",
+              "descendants": "http://www.w3.org/2002/07/owl#Class",
+              "ancestors": "http://www.w3.org/2002/07/owl#Class",
+              "instances": "http://data.bioontology.org/metadata/Instance",
+              "tree": "http://www.w3.org/2002/07/owl#Class",
+              "notes": "http://data.bioontology.org/metadata/Note",
+              "mappings": "http://data.bioontology.org/metadata/Mapping",
+              "ui": "http://www.w3.org/2002/07/owl#Class"
+            }
+          },
+          "@context": {
+            "@vocab": "http://data.bioontology.org/metadata/",
+            "prefLabel": "http://www.w3.org/2004/02/skos/core#prefLabel",
+            "synonym": "http://www.w3.org/2004/02/skos/core#altLabel",
+            "obsolete": "http://www.w3.org/2002/07/owl#deprecated",
+            "semanticType": "http://bioportal.bioontology.org/ontologies/umls/hasSTY",
+            "cui": "http://bioportal.bioontology.org/ontologies/umls/cui",
+            "@language": "en"
+          }
+        },
+        {
+          "prefLabel": "melanoma",
+          "synonym": [
+            "Melanoma"
+          ],
+          "cui": [
+            "C0025202"
+          ],
+          "semanticType": [
+            "T191"
+          ],
+          "obsolete": false,
+          "matchType": "prefLabel",
+          "ontologyType": "ONTOLOGY",
+          "@id": "http://purl.bioontology.org/ontology/ICPC2P/S77003",
+          "@type": "http://www.w3.org/2002/07/owl#Class",
+          "links": {
+            "self": "https://data.bioontology.org/ontologies/ICPC2P/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FICPC2P%2FS77003",
+            "ontology": "https://data.bioontology.org/ontologies/ICPC2P",
+            "children": "https://data.bioontology.org/ontologies/ICPC2P/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FICPC2P%2FS77003/children",
+            "parents": "https://data.bioontology.org/ontologies/ICPC2P/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FICPC2P%2FS77003/parents",
+            "descendants": "https://data.bioontology.org/ontologies/ICPC2P/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FICPC2P%2FS77003/descendants",
+            "ancestors": "https://data.bioontology.org/ontologies/ICPC2P/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FICPC2P%2FS77003/ancestors",
+            "instances": "https://data.bioontology.org/ontologies/ICPC2P/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FICPC2P%2FS77003/instances",
+            "tree": "https://data.bioontology.org/ontologies/ICPC2P/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FICPC2P%2FS77003/tree",
+            "notes": "https://data.bioontology.org/ontologies/ICPC2P/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FICPC2P%2FS77003/notes",
+            "mappings": "https://data.bioontology.org/ontologies/ICPC2P/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FICPC2P%2FS77003/mappings",
+            "ui": "http://bioportal.bioontology.org/ontologies/ICPC2P?p=classes&conceptid=http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FICPC2P%2FS77003",
+            "@context": {
+              "self": "http://www.w3.org/2002/07/owl#Class",
+              "ontology": "http://data.bioontology.org/metadata/Ontology",
+              "children": "http://www.w3.org/2002/07/owl#Class",
+              "parents": "http://www.w3.org/2002/07/owl#Class",
+              "descendants": "http://www.w3.org/2002/07/owl#Class",
+              "ancestors": "http://www.w3.org/2002/07/owl#Class",
+              "instances": "http://data.bioontology.org/metadata/Instance",
+              "tree": "http://www.w3.org/2002/07/owl#Class",
+              "notes": "http://data.bioontology.org/metadata/Note",
+              "mappings": "http://data.bioontology.org/metadata/Mapping",
+              "ui": "http://www.w3.org/2002/07/owl#Class"
+            }
+          },
+          "@context": {
+            "@vocab": "http://data.bioontology.org/metadata/",
+            "prefLabel": "http://www.w3.org/2004/02/skos/core#prefLabel",
+            "synonym": "http://www.w3.org/2004/02/skos/core#altLabel",
+            "obsolete": "http://www.w3.org/2002/07/owl#deprecated",
+            "semanticType": "http://bioportal.bioontology.org/ontologies/umls/hasSTY",
+            "cui": "http://bioportal.bioontology.org/ontologies/umls/cui",
+            "@language": "en"
+          }
+        },
+        {
+          "prefLabel": "melanoma",
+          "definition": [
+            "<p>melanoma vaccine</p>"
+          ],
+          "cui": [
+            "C0796561"
+          ],
+          "semanticType": [
+            "T129",
+            "T121"
+          ],
+          "obsolete": false,
+          "matchType": "prefLabel",
+          "ontologyType": "ONTOLOGY",
+          "@id": "http://purl.bioontology.org/ontology/HL7/C0796561",
+          "@type": "http://www.w3.org/2002/07/owl#Class",
+          "links": {
+            "self": "https://data.bioontology.org/ontologies/HL7/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FHL7%2FC0796561",
+            "ontology": "https://data.bioontology.org/ontologies/HL7",
+            "children": "https://data.bioontology.org/ontologies/HL7/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FHL7%2FC0796561/children",
+            "parents": "https://data.bioontology.org/ontologies/HL7/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FHL7%2FC0796561/parents",
+            "descendants": "https://data.bioontology.org/ontologies/HL7/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FHL7%2FC0796561/descendants",
+            "ancestors": "https://data.bioontology.org/ontologies/HL7/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FHL7%2FC0796561/ancestors",
+            "instances": "https://data.bioontology.org/ontologies/HL7/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FHL7%2FC0796561/instances",
+            "tree": "https://data.bioontology.org/ontologies/HL7/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FHL7%2FC0796561/tree",
+            "notes": "https://data.bioontology.org/ontologies/HL7/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FHL7%2FC0796561/notes",
+            "mappings": "https://data.bioontology.org/ontologies/HL7/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FHL7%2FC0796561/mappings",
+            "ui": "http://bioportal.bioontology.org/ontologies/HL7?p=classes&conceptid=http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FHL7%2FC0796561",
+            "@context": {
+              "self": "http://www.w3.org/2002/07/owl#Class",
+              "ontology": "http://data.bioontology.org/metadata/Ontology",
+              "children": "http://www.w3.org/2002/07/owl#Class",
+              "parents": "http://www.w3.org/2002/07/owl#Class",
+              "descendants": "http://www.w3.org/2002/07/owl#Class",
+              "ancestors": "http://www.w3.org/2002/07/owl#Class",
+              "instances": "http://data.bioontology.org/metadata/Instance",
+              "tree": "http://www.w3.org/2002/07/owl#Class",
+              "notes": "http://data.bioontology.org/metadata/Note",
+              "mappings": "http://data.bioontology.org/metadata/Mapping",
+              "ui": "http://www.w3.org/2002/07/owl#Class"
+            }
+          },
+          "@context": {
+            "@vocab": "http://data.bioontology.org/metadata/",
+            "prefLabel": "http://www.w3.org/2004/02/skos/core#prefLabel",
+            "definition": "http://www.w3.org/2004/02/skos/core#definition",
+            "obsolete": "http://www.w3.org/2002/07/owl#deprecated",
+            "semanticType": "http://bioportal.bioontology.org/ontologies/umls/hasSTY",
+            "cui": "http://bioportal.bioontology.org/ontologies/umls/cui",
+            "@language": "en"
+          }
+        },
+        {
+          "prefLabel": "Melanoma",
+          "obsolete": false,
+          "matchType": "prefLabel",
+          "ontologyType": "ONTOLOGY",
+          "@id": "http://www.co-ode.org/ontologies/galen#Melanoma",
+          "@type": "http://www.w3.org/2002/07/owl#Class",
+          "links": {
+            "self": "https://data.bioontology.org/ontologies/GALEN/classes/http%3A%2F%2Fwww.co-ode.org%2Fontologies%2Fgalen%23Melanoma",
+            "ontology": "https://data.bioontology.org/ontologies/GALEN",
+            "children": "https://data.bioontology.org/ontologies/GALEN/classes/http%3A%2F%2Fwww.co-ode.org%2Fontologies%2Fgalen%23Melanoma/children",
+            "parents": "https://data.bioontology.org/ontologies/GALEN/classes/http%3A%2F%2Fwww.co-ode.org%2Fontologies%2Fgalen%23Melanoma/parents",
+            "descendants": "https://data.bioontology.org/ontologies/GALEN/classes/http%3A%2F%2Fwww.co-ode.org%2Fontologies%2Fgalen%23Melanoma/descendants",
+            "ancestors": "https://data.bioontology.org/ontologies/GALEN/classes/http%3A%2F%2Fwww.co-ode.org%2Fontologies%2Fgalen%23Melanoma/ancestors",
+            "instances": "https://data.bioontology.org/ontologies/GALEN/classes/http%3A%2F%2Fwww.co-ode.org%2Fontologies%2Fgalen%23Melanoma/instances",
+            "tree": "https://data.bioontology.org/ontologies/GALEN/classes/http%3A%2F%2Fwww.co-ode.org%2Fontologies%2Fgalen%23Melanoma/tree",
+            "notes": "https://data.bioontology.org/ontologies/GALEN/classes/http%3A%2F%2Fwww.co-ode.org%2Fontologies%2Fgalen%23Melanoma/notes",
+            "mappings": "https://data.bioontology.org/ontologies/GALEN/classes/http%3A%2F%2Fwww.co-ode.org%2Fontologies%2Fgalen%23Melanoma/mappings",
+            "ui": "http://bioportal.bioontology.org/ontologies/GALEN?p=classes&conceptid=http%3A%2F%2Fwww.co-ode.org%2Fontologies%2Fgalen%23Melanoma",
+            "@context": {
+              "self": "http://www.w3.org/2002/07/owl#Class",
+              "ontology": "http://data.bioontology.org/metadata/Ontology",
+              "children": "http://www.w3.org/2002/07/owl#Class",
+              "parents": "http://www.w3.org/2002/07/owl#Class",
+              "descendants": "http://www.w3.org/2002/07/owl#Class",
+              "ancestors": "http://www.w3.org/2002/07/owl#Class",
+              "instances": "http://data.bioontology.org/metadata/Instance",
+              "tree": "http://www.w3.org/2002/07/owl#Class",
+              "notes": "http://data.bioontology.org/metadata/Note",
+              "mappings": "http://data.bioontology.org/metadata/Mapping",
+              "ui": "http://www.w3.org/2002/07/owl#Class"
+            }
+          },
+          "@context": {
+            "@vocab": "http://data.bioontology.org/metadata/",
+            "prefLabel": "http://www.w3.org/2004/02/skos/core#prefLabel",
+            "obsolete": "http://www.w3.org/2002/07/owl#deprecated",
+            "@language": "en"
+          }
+        },
+        {
+          "prefLabel": "Melanoma",
+          "obsolete": false,
+          "matchType": "prefLabel",
+          "ontologyType": "ONTOLOGY",
+          "@id": "http://scai.fraunhofer.de/CSEO#Melanoma",
+          "@type": "http://www.w3.org/2002/07/owl#Class",
+          "links": {
+            "self": "https://data.bioontology.org/ontologies/CSEO/classes/http%3A%2F%2Fscai.fraunhofer.de%2FCSEO%23Melanoma",
+            "ontology": "https://data.bioontology.org/ontologies/CSEO",
+            "children": "https://data.bioontology.org/ontologies/CSEO/classes/http%3A%2F%2Fscai.fraunhofer.de%2FCSEO%23Melanoma/children",
+            "parents": "https://data.bioontology.org/ontologies/CSEO/classes/http%3A%2F%2Fscai.fraunhofer.de%2FCSEO%23Melanoma/parents",
+            "descendants": "https://data.bioontology.org/ontologies/CSEO/classes/http%3A%2F%2Fscai.fraunhofer.de%2FCSEO%23Melanoma/descendants",
+            "ancestors": "https://data.bioontology.org/ontologies/CSEO/classes/http%3A%2F%2Fscai.fraunhofer.de%2FCSEO%23Melanoma/ancestors",
+            "instances": "https://data.bioontology.org/ontologies/CSEO/classes/http%3A%2F%2Fscai.fraunhofer.de%2FCSEO%23Melanoma/instances",
+            "tree": "https://data.bioontology.org/ontologies/CSEO/classes/http%3A%2F%2Fscai.fraunhofer.de%2FCSEO%23Melanoma/tree",
+            "notes": "https://data.bioontology.org/ontologies/CSEO/classes/http%3A%2F%2Fscai.fraunhofer.de%2FCSEO%23Melanoma/notes",
+            "mappings": "https://data.bioontology.org/ontologies/CSEO/classes/http%3A%2F%2Fscai.fraunhofer.de%2FCSEO%23Melanoma/mappings",
+            "ui": "http://bioportal.bioontology.org/ontologies/CSEO?p=classes&conceptid=http%3A%2F%2Fscai.fraunhofer.de%2FCSEO%23Melanoma",
+            "@context": {
+              "self": "http://www.w3.org/2002/07/owl#Class",
+              "ontology": "http://data.bioontology.org/metadata/Ontology",
+              "children": "http://www.w3.org/2002/07/owl#Class",
+              "parents": "http://www.w3.org/2002/07/owl#Class",
+              "descendants": "http://www.w3.org/2002/07/owl#Class",
+              "ancestors": "http://www.w3.org/2002/07/owl#Class",
+              "instances": "http://data.bioontology.org/metadata/Instance",
+              "tree": "http://www.w3.org/2002/07/owl#Class",
+              "notes": "http://data.bioontology.org/metadata/Note",
+              "mappings": "http://data.bioontology.org/metadata/Mapping",
+              "ui": "http://www.w3.org/2002/07/owl#Class"
+            }
+          },
+          "@context": {
+            "@vocab": "http://data.bioontology.org/metadata/",
+            "prefLabel": "http://www.w3.org/2004/02/skos/core#prefLabel",
+            "obsolete": "http://www.w3.org/2002/07/owl#deprecated",
+            "@language": "en"
+          }
+        },
+        {
+          "prefLabel": "Melanoma",
+          "synonym": [
+            "NodeType: Folder"
+          ],
+          "obsolete": false,
+          "matchType": "prefLabel",
+          "ontologyType": "ONTOLOGY",
+          "@id": "urn:agi-folder:melanoma",
+          "@type": "http://www.w3.org/2002/07/owl#Class",
+          "links": {
+            "self": "https://data.bioontology.org/ontologies/BPT/classes/urn%3Aagi-folder%3Amelanoma",
+            "ontology": "https://data.bioontology.org/ontologies/BPT",
+            "children": "https://data.bioontology.org/ontologies/BPT/classes/urn%3Aagi-folder%3Amelanoma/children",
+            "parents": "https://data.bioontology.org/ontologies/BPT/classes/urn%3Aagi-folder%3Amelanoma/parents",
+            "descendants": "https://data.bioontology.org/ontologies/BPT/classes/urn%3Aagi-folder%3Amelanoma/descendants",
+            "ancestors": "https://data.bioontology.org/ontologies/BPT/classes/urn%3Aagi-folder%3Amelanoma/ancestors",
+            "instances": "https://data.bioontology.org/ontologies/BPT/classes/urn%3Aagi-folder%3Amelanoma/instances",
+            "tree": "https://data.bioontology.org/ontologies/BPT/classes/urn%3Aagi-folder%3Amelanoma/tree",
+            "notes": "https://data.bioontology.org/ontologies/BPT/classes/urn%3Aagi-folder%3Amelanoma/notes",
+            "mappings": "https://data.bioontology.org/ontologies/BPT/classes/urn%3Aagi-folder%3Amelanoma/mappings",
+            "ui": "http://bioportal.bioontology.org/ontologies/BPT?p=classes&conceptid=urn%3Aagi-folder%3Amelanoma",
+            "@context": {
+              "self": "http://www.w3.org/2002/07/owl#Class",
+              "ontology": "http://data.bioontology.org/metadata/Ontology",
+              "children": "http://www.w3.org/2002/07/owl#Class",
+              "parents": "http://www.w3.org/2002/07/owl#Class",
+              "descendants": "http://www.w3.org/2002/07/owl#Class",
+              "ancestors": "http://www.w3.org/2002/07/owl#Class",
+              "instances": "http://data.bioontology.org/metadata/Instance",
+              "tree": "http://www.w3.org/2002/07/owl#Class",
+              "notes": "http://data.bioontology.org/metadata/Note",
+              "mappings": "http://data.bioontology.org/metadata/Mapping",
+              "ui": "http://www.w3.org/2002/07/owl#Class"
+            }
+          },
+          "@context": {
+            "@vocab": "http://data.bioontology.org/metadata/",
+            "prefLabel": "http://www.w3.org/2004/02/skos/core#prefLabel",
+            "synonym": "http://www.w3.org/2004/02/skos/core#altLabel",
+            "obsolete": "http://www.w3.org/2002/07/owl#deprecated",
+            "@language": "en"
+          }
+        },
+        {
+          "prefLabel": "Melanoma [Disease/Finding]",
+          "synonym": [
+            "Melanoma",
+            "Malignant Melanoma"
+          ],
+          "cui": [
+            "C0025202"
+          ],
+          "semanticType": [
+            "T191"
+          ],
+          "obsolete": false,
+          "matchType": "prefLabel",
+          "ontologyType": "ONTOLOGY",
+          "@id": "http://purl.bioontology.org/ontology/NDFRT/N0000001969",
+          "@type": "http://www.w3.org/2002/07/owl#Class",
+          "links": {
+            "self": "https://data.bioontology.org/ontologies/NDFRT/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FNDFRT%2FN0000001969",
+            "ontology": "https://data.bioontology.org/ontologies/NDFRT",
+            "children": "https://data.bioontology.org/ontologies/NDFRT/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FNDFRT%2FN0000001969/children",
+            "parents": "https://data.bioontology.org/ontologies/NDFRT/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FNDFRT%2FN0000001969/parents",
+            "descendants": "https://data.bioontology.org/ontologies/NDFRT/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FNDFRT%2FN0000001969/descendants",
+            "ancestors": "https://data.bioontology.org/ontologies/NDFRT/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FNDFRT%2FN0000001969/ancestors",
+            "instances": "https://data.bioontology.org/ontologies/NDFRT/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FNDFRT%2FN0000001969/instances",
+            "tree": "https://data.bioontology.org/ontologies/NDFRT/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FNDFRT%2FN0000001969/tree",
+            "notes": "https://data.bioontology.org/ontologies/NDFRT/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FNDFRT%2FN0000001969/notes",
+            "mappings": "https://data.bioontology.org/ontologies/NDFRT/classes/http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FNDFRT%2FN0000001969/mappings",
+            "ui": "http://bioportal.bioontology.org/ontologies/NDFRT?p=classes&conceptid=http%3A%2F%2Fpurl.bioontology.org%2Fontology%2FNDFRT%2FN0000001969",
+            "@context": {
+              "self": "http://www.w3.org/2002/07/owl#Class",
+              "ontology": "http://data.bioontology.org/metadata/Ontology",
+              "children": "http://www.w3.org/2002/07/owl#Class",
+              "parents": "http://www.w3.org/2002/07/owl#Class",
+              "descendants": "http://www.w3.org/2002/07/owl#Class",
+              "ancestors": "http://www.w3.org/2002/07/owl#Class",
+              "instances": "http://data.bioontology.org/metadata/Instance",
+              "tree": "http://www.w3.org/2002/07/owl#Class",
+              "notes": "http://data.bioontology.org/metadata/Note",
+              "mappings": "http://data.bioontology.org/metadata/Mapping",
+              "ui": "http://www.w3.org/2002/07/owl#Class"
+            }
+          },
+          "@context": {
+            "@vocab": "http://data.bioontology.org/metadata/",
+            "prefLabel": "http://www.w3.org/2004/02/skos/core#prefLabel",
+            "synonym": "http://www.w3.org/2004/02/skos/core#altLabel",
+            "obsolete": "http://www.w3.org/2002/07/owl#deprecated",
+            "semanticType": "http://bioportal.bioontology.org/ontologies/umls/hasSTY",
+            "cui": "http://bioportal.bioontology.org/ontologies/umls/cui",
+            "@language": "en"
+          }
+        },
+        {
+          "prefLabel": "NCI CTEP SDC Melanoma Sub-Category Terminology",
+          "synonym": [
+            "NCI CTEP SDC Melanoma Sub-Category Terminology",
+            "NCI CTEP Simple Disease Classification Melanoma Sub-Category Terminology",
+            "Melanoma"
+          ],
+          "definition": [
+            "Melanoma is an NCI Cancer Therapeutic Evaluation Program (CTEP) Simplified Disease Classification (SDC) category used to organize cancer-related disease coding that harmonizes with and supports reporting based on the global standard Medical Dictionary for Drug Regulatory Reporting (MedDRA) terminology."
+          ],
+          "obsolete": false,
+          "matchType": "prefLabel",
+          "ontologyType": "ONTOLOGY",
+          "@id": "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C103113",
+          "@type": "http://www.w3.org/2002/07/owl#Class",
+          "links": {
+            "self": "https://data.bioontology.org/ontologies/NCIT/classes/http%3A%2F%2Fncicb.nci.nih.gov%2Fxml%2Fowl%2FEVS%2FThesaurus.owl%23C103113",
+            "ontology": "https://data.bioontology.org/ontologies/NCIT",
+            "children": "https://data.bioontology.org/ontologies/NCIT/classes/http%3A%2F%2Fncicb.nci.nih.gov%2Fxml%2Fowl%2FEVS%2FThesaurus.owl%23C103113/children",
+            "parents": "https://data.bioontology.org/ontologies/NCIT/classes/http%3A%2F%2Fncicb.nci.nih.gov%2Fxml%2Fowl%2FEVS%2FThesaurus.owl%23C103113/parents",
+            "descendants": "https://data.bioontology.org/ontologies/NCIT/classes/http%3A%2F%2Fncicb.nci.nih.gov%2Fxml%2Fowl%2FEVS%2FThesaurus.owl%23C103113/descendants",
+            "ancestors": "https://data.bioontology.org/ontologies/NCIT/classes/http%3A%2F%2Fncicb.nci.nih.gov%2Fxml%2Fowl%2FEVS%2FThesaurus.owl%23C103113/ancestors",
+            "instances": "https://data.bioontology.org/ontologies/NCIT/classes/http%3A%2F%2Fncicb.nci.nih.gov%2Fxml%2Fowl%2FEVS%2FThesaurus.owl%23C103113/instances",
+            "tree": "https://data.bioontology.org/ontologies/NCIT/classes/http%3A%2F%2Fncicb.nci.nih.gov%2Fxml%2Fowl%2FEVS%2FThesaurus.owl%23C103113/tree",
+            "notes": "https://data.bioontology.org/ontologies/NCIT/classes/http%3A%2F%2Fncicb.nci.nih.gov%2Fxml%2Fowl%2FEVS%2FThesaurus.owl%23C103113/notes",
+            "mappings": "https://data.bioontology.org/ontologies/NCIT/classes/http%3A%2F%2Fncicb.nci.nih.gov%2Fxml%2Fowl%2FEVS%2FThesaurus.owl%23C103113/mappings",
+            "ui": "http://bioportal.bioontology.org/ontologies/NCIT?p=classes&conceptid=http%3A%2F%2Fncicb.nci.nih.gov%2Fxml%2Fowl%2FEVS%2FThesaurus.owl%23C103113",
+            "@context": {
+              "self": "http://www.w3.org/2002/07/owl#Class",
+              "ontology": "http://data.bioontology.org/metadata/Ontology",
+              "children": "http://www.w3.org/2002/07/owl#Class",
+              "parents": "http://www.w3.org/2002/07/owl#Class",
+              "descendants": "http://www.w3.org/2002/07/owl#Class",
+              "ancestors": "http://www.w3.org/2002/07/owl#Class",
+              "instances": "http://data.bioontology.org/metadata/Instance",
+              "tree": "http://www.w3.org/2002/07/owl#Class",
+              "notes": "http://data.bioontology.org/metadata/Note",
+              "mappings": "http://data.bioontology.org/metadata/Mapping",
+              "ui": "http://www.w3.org/2002/07/owl#Class"
+            }
+          },
+          "@context": {
+            "@vocab": "http://data.bioontology.org/metadata/",
+            "prefLabel": "http://www.w3.org/2004/02/skos/core#prefLabel",
+            "synonym": "http://www.w3.org/2004/02/skos/core#altLabel",
+            "definition": "http://www.w3.org/2004/02/skos/core#definition",
+            "obsolete": "http://www.w3.org/2002/07/owl#deprecated",
+            "@language": "en"
+          }
+        },
+        {
+          "prefLabel": "Melanoma Pathway",
+          "synonym": [
+            "Melanoma Pathway",
+            "Melanoma"
+          ],
+          "obsolete": false,
+          "matchType": "prefLabel",
+          "ontologyType": "ONTOLOGY",
+          "@id": "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C91477",
+          "@type": "http://www.w3.org/2002/07/owl#Class",
+          "links": {
+            "self": "https://data.bioontology.org/ontologies/NCIT/classes/http%3A%2F%2Fncicb.nci.nih.gov%2Fxml%2Fowl%2FEVS%2FThesaurus.owl%23C91477",
+            "ontology": "https://data.bioontology.org/ontologies/NCIT",
+            "children": "https://data.bioontology.org/ontologies/NCIT/classes/http%3A%2F%2Fncicb.nci.nih.gov%2Fxml%2Fowl%2FEVS%2FThesaurus.owl%23C91477/children",
+            "parents": "https://data.bioontology.org/ontologies/NCIT/classes/http%3A%2F%2Fncicb.nci.nih.gov%2Fxml%2Fowl%2FEVS%2FThesaurus.owl%23C91477/parents",
+            "descendants": "https://data.bioontology.org/ontologies/NCIT/classes/http%3A%2F%2Fncicb.nci.nih.gov%2Fxml%2Fowl%2FEVS%2FThesaurus.owl%23C91477/descendants",
+            "ancestors": "https://data.bioontology.org/ontologies/NCIT/classes/http%3A%2F%2Fncicb.nci.nih.gov%2Fxml%2Fowl%2FEVS%2FThesaurus.owl%23C91477/ancestors",
+            "instances": "https://data.bioontology.org/ontologies/NCIT/classes/http%3A%2F%2Fncicb.nci.nih.gov%2Fxml%2Fowl%2FEVS%2FThesaurus.owl%23C91477/instances",
+            "tree": "https://data.bioontology.org/ontologies/NCIT/classes/http%3A%2F%2Fncicb.nci.nih.gov%2Fxml%2Fowl%2FEVS%2FThesaurus.owl%23C91477/tree",
+            "notes": "https://data.bioontology.org/ontologies/NCIT/classes/http%3A%2F%2Fncicb.nci.nih.gov%2Fxml%2Fowl%2FEVS%2FThesaurus.owl%23C91477/notes",
+            "mappings": "https://data.bioontology.org/ontologies/NCIT/classes/http%3A%2F%2Fncicb.nci.nih.gov%2Fxml%2Fowl%2FEVS%2FThesaurus.owl%23C91477/mappings",
+            "ui": "http://bioportal.bioontology.org/ontologies/NCIT?p=classes&conceptid=http%3A%2F%2Fncicb.nci.nih.gov%2Fxml%2Fowl%2FEVS%2FThesaurus.owl%23C91477",
+            "@context": {
+              "self": "http://www.w3.org/2002/07/owl#Class",
+              "ontology": "http://data.bioontology.org/metadata/Ontology",
+              "children": "http://www.w3.org/2002/07/owl#Class",
+              "parents": "http://www.w3.org/2002/07/owl#Class",
+              "descendants": "http://www.w3.org/2002/07/owl#Class",
+              "ancestors": "http://www.w3.org/2002/07/owl#Class",
+              "instances": "http://data.bioontology.org/metadata/Instance",
+              "tree": "http://www.w3.org/2002/07/owl#Class",
+              "notes": "http://data.bioontology.org/metadata/Note",
+              "mappings": "http://data.bioontology.org/metadata/Mapping",
+              "ui": "http://www.w3.org/2002/07/owl#Class"
+            }
+          },
+          "@context": {
+            "@vocab": "http://data.bioontology.org/metadata/",
+            "prefLabel": "http://www.w3.org/2004/02/skos/core#prefLabel",
+            "synonym": "http://www.w3.org/2004/02/skos/core#altLabel",
+            "obsolete": "http://www.w3.org/2002/07/owl#deprecated",
+            "@language": "en"
+          }
+        },
+        {
+          "prefLabel": "melanoma",
+          "synonym": [
+            "melanoma syndrome",
+            "melanoma malignant",
+            "cutaneous melanoma",
+            "malignant melanoma",
+            "malignant melanomas",
+            "melanosarcoma",
+            "nevocarcinoma",
+            "melanocarcinoma",
+            "melanomas"
+          ],
+          "obsolete": false,
+          "matchType": "prefLabel",
+          "ontologyType": "ONTOLOGY",
+          "@id": "http://sbmi.uth.tmc.edu/ontology/ochv#7894",
+          "@type": "http://www.w3.org/2002/07/owl#Class",
+          "links": {
+            "self": "https://data.bioontology.org/ontologies/OCHV/classes/http%3A%2F%2Fsbmi.uth.tmc.edu%2Fontology%2Fochv%237894",
+            "ontology": "https://data.bioontology.org/ontologies/OCHV",
+            "children": "https://data.bioontology.org/ontologies/OCHV/classes/http%3A%2F%2Fsbmi.uth.tmc.edu%2Fontology%2Fochv%237894/children",
+            "parents": "https://data.bioontology.org/ontologies/OCHV/classes/http%3A%2F%2Fsbmi.uth.tmc.edu%2Fontology%2Fochv%237894/parents",
+            "descendants": "https://data.bioontology.org/ontologies/OCHV/classes/http%3A%2F%2Fsbmi.uth.tmc.edu%2Fontology%2Fochv%237894/descendants",
+            "ancestors": "https://data.bioontology.org/ontologies/OCHV/classes/http%3A%2F%2Fsbmi.uth.tmc.edu%2Fontology%2Fochv%237894/ancestors",
+            "instances": "https://data.bioontology.org/ontologies/OCHV/classes/http%3A%2F%2Fsbmi.uth.tmc.edu%2Fontology%2Fochv%237894/instances",
+            "tree": "https://data.bioontology.org/ontologies/OCHV/classes/http%3A%2F%2Fsbmi.uth.tmc.edu%2Fontology%2Fochv%237894/tree",
+            "notes": "https://data.bioontology.org/ontologies/OCHV/classes/http%3A%2F%2Fsbmi.uth.tmc.edu%2Fontology%2Fochv%237894/notes",
+            "mappings": "https://data.bioontology.org/ontologies/OCHV/classes/http%3A%2F%2Fsbmi.uth.tmc.edu%2Fontology%2Fochv%237894/mappings",
+            "ui": "http://bioportal.bioontology.org/ontologies/OCHV?p=classes&conceptid=http%3A%2F%2Fsbmi.uth.tmc.edu%2Fontology%2Fochv%237894",
+            "@context": {
+              "self": "http://www.w3.org/2002/07/owl#Class",
+              "ontology": "http://data.bioontology.org/metadata/Ontology",
+              "children": "http://www.w3.org/2002/07/owl#Class",
+              "parents": "http://www.w3.org/2002/07/owl#Class",
+              "descendants": "http://www.w3.org/2002/07/owl#Class",
+              "ancestors": "http://www.w3.org/2002/07/owl#Class",
+              "instances": "http://data.bioontology.org/metadata/Instance",
+              "tree": "http://www.w3.org/2002/07/owl#Class",
+              "notes": "http://data.bioontology.org/metadata/Note",
+              "mappings": "http://data.bioontology.org/metadata/Mapping",
+              "ui": "http://www.w3.org/2002/07/owl#Class"
+            }
+          },
+          "@context": {
+            "@vocab": "http://data.bioontology.org/metadata/",
+            "prefLabel": "http://www.w3.org/2004/02/skos/core#prefLabel",
+            "synonym": "http://www.w3.org/2004/02/skos/core#altLabel",
+            "obsolete": "http://www.w3.org/2002/07/owl#deprecated",
+            "@language": "en"
+          }
+        },
+        {
+          "prefLabel": "melanoma",
+          "obsolete": false,
+          "matchType": "prefLabel",
+          "ontologyType": "ONTOLOGY",
+          "@id": "http://sbmi.uth.tmc.edu/ontology/ochv#C0025202",
+          "@type": "http://www.w3.org/2002/07/owl#Class",
+          "links": {
+            "self": "https://data.bioontology.org/ontologies/OCHV/classes/http%3A%2F%2Fsbmi.uth.tmc.edu%2Fontology%2Fochv%23C0025202",
+            "ontology": "https://data.bioontology.org/ontologies/OCHV",
+            "children": "https://data.bioontology.org/ontologies/OCHV/classes/http%3A%2F%2Fsbmi.uth.tmc.edu%2Fontology%2Fochv%23C0025202/children",
+            "parents": "https://data.bioontology.org/ontologies/OCHV/classes/http%3A%2F%2Fsbmi.uth.tmc.edu%2Fontology%2Fochv%23C0025202/parents",
+            "descendants": "https://data.bioontology.org/ontologies/OCHV/classes/http%3A%2F%2Fsbmi.uth.tmc.edu%2Fontology%2Fochv%23C0025202/descendants",
+            "ancestors": "https://data.bioontology.org/ontologies/OCHV/classes/http%3A%2F%2Fsbmi.uth.tmc.edu%2Fontology%2Fochv%23C0025202/ancestors",
+            "instances": "https://data.bioontology.org/ontologies/OCHV/classes/http%3A%2F%2Fsbmi.uth.tmc.edu%2Fontology%2Fochv%23C0025202/instances",
+            "tree": "https://data.bioontology.org/ontologies/OCHV/classes/http%3A%2F%2Fsbmi.uth.tmc.edu%2Fontology%2Fochv%23C0025202/tree",
+            "notes": "https://data.bioontology.org/ontologies/OCHV/classes/http%3A%2F%2Fsbmi.uth.tmc.edu%2Fontology%2Fochv%23C0025202/notes",
+            "mappings": "https://data.bioontology.org/ontologies/OCHV/classes/http%3A%2F%2Fsbmi.uth.tmc.edu%2Fontology%2Fochv%23C0025202/mappings",
+            "ui": "http://bioportal.bioontology.org/ontologies/OCHV?p=classes&conceptid=http%3A%2F%2Fsbmi.uth.tmc.edu%2Fontology%2Fochv%23C0025202",
+            "@context": {
+              "self": "http://www.w3.org/2002/07/owl#Class",
+              "ontology": "http://data.bioontology.org/metadata/Ontology",
+              "children": "http://www.w3.org/2002/07/owl#Class",
+              "parents": "http://www.w3.org/2002/07/owl#Class",
+              "descendants": "http://www.w3.org/2002/07/owl#Class",
+              "ancestors": "http://www.w3.org/2002/07/owl#Class",
+              "instances": "http://data.bioontology.org/metadata/Instance",
+              "tree": "http://www.w3.org/2002/07/owl#Class",
+              "notes": "http://data.bioontology.org/metadata/Note",
+              "mappings": "http://data.bioontology.org/metadata/Mapping",
+              "ui": "http://www.w3.org/2002/07/owl#Class"
+            }
+          },
+          "@context": {
+            "@vocab": "http://data.bioontology.org/metadata/",
+            "prefLabel": "http://www.w3.org/2004/02/skos/core#prefLabel",
+            "obsolete": "http://www.w3.org/2002/07/owl#deprecated",
+            "@language": "en"
+          }
+        },
+        {
+          "prefLabel": "Melanoma",
+          "obsolete": false,
+          "matchType": "prefLabel",
+          "ontologyType": "ONTOLOGY",
+          "@id": "http://phenomebrowser.net/ontologies/mesh/mesh.owl#C04.557.465.625.650.510",
+          "@type": "http://www.w3.org/2002/07/owl#Class",
+          "links": {
+            "self": "https://data.bioontology.org/ontologies/RH-MESH/classes/http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23C04.557.465.625.650.510",
+            "ontology": "https://data.bioontology.org/ontologies/RH-MESH",
+            "children": "https://data.bioontology.org/ontologies/RH-MESH/classes/http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23C04.557.465.625.650.510/children",
+            "parents": "https://data.bioontology.org/ontologies/RH-MESH/classes/http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23C04.557.465.625.650.510/parents",
+            "descendants": "https://data.bioontology.org/ontologies/RH-MESH/classes/http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23C04.557.465.625.650.510/descendants",
+            "ancestors": "https://data.bioontology.org/ontologies/RH-MESH/classes/http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23C04.557.465.625.650.510/ancestors",
+            "instances": "https://data.bioontology.org/ontologies/RH-MESH/classes/http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23C04.557.465.625.650.510/instances",
+            "tree": "https://data.bioontology.org/ontologies/RH-MESH/classes/http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23C04.557.465.625.650.510/tree",
+            "notes": "https://data.bioontology.org/ontologies/RH-MESH/classes/http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23C04.557.465.625.650.510/notes",
+            "mappings": "https://data.bioontology.org/ontologies/RH-MESH/classes/http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23C04.557.465.625.650.510/mappings",
+            "ui": "http://bioportal.bioontology.org/ontologies/RH-MESH?p=classes&conceptid=http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23C04.557.465.625.650.510",
+            "@context": {
+              "self": "http://www.w3.org/2002/07/owl#Class",
+              "ontology": "http://data.bioontology.org/metadata/Ontology",
+              "children": "http://www.w3.org/2002/07/owl#Class",
+              "parents": "http://www.w3.org/2002/07/owl#Class",
+              "descendants": "http://www.w3.org/2002/07/owl#Class",
+              "ancestors": "http://www.w3.org/2002/07/owl#Class",
+              "instances": "http://data.bioontology.org/metadata/Instance",
+              "tree": "http://www.w3.org/2002/07/owl#Class",
+              "notes": "http://data.bioontology.org/metadata/Note",
+              "mappings": "http://data.bioontology.org/metadata/Mapping",
+              "ui": "http://www.w3.org/2002/07/owl#Class"
+            }
+          },
+          "@context": {
+            "@vocab": "http://data.bioontology.org/metadata/",
+            "prefLabel": "http://www.w3.org/2004/02/skos/core#prefLabel",
+            "obsolete": "http://www.w3.org/2002/07/owl#deprecated",
+            "@language": "en"
+          }
+        },
+        {
+          "prefLabel": "Melanoma",
+          "obsolete": false,
+          "matchType": "prefLabel",
+          "ontologyType": "ONTOLOGY",
+          "@id": "http://phenomebrowser.net/ontologies/mesh/mesh.owl#C04.557.580.625.650.510",
+          "@type": "http://www.w3.org/2002/07/owl#Class",
+          "links": {
+            "self": "https://data.bioontology.org/ontologies/RH-MESH/classes/http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23C04.557.580.625.650.510",
+            "ontology": "https://data.bioontology.org/ontologies/RH-MESH",
+            "children": "https://data.bioontology.org/ontologies/RH-MESH/classes/http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23C04.557.580.625.650.510/children",
+            "parents": "https://data.bioontology.org/ontologies/RH-MESH/classes/http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23C04.557.580.625.650.510/parents",
+            "descendants": "https://data.bioontology.org/ontologies/RH-MESH/classes/http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23C04.557.580.625.650.510/descendants",
+            "ancestors": "https://data.bioontology.org/ontologies/RH-MESH/classes/http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23C04.557.580.625.650.510/ancestors",
+            "instances": "https://data.bioontology.org/ontologies/RH-MESH/classes/http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23C04.557.580.625.650.510/instances",
+            "tree": "https://data.bioontology.org/ontologies/RH-MESH/classes/http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23C04.557.580.625.650.510/tree",
+            "notes": "https://data.bioontology.org/ontologies/RH-MESH/classes/http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23C04.557.580.625.650.510/notes",
+            "mappings": "https://data.bioontology.org/ontologies/RH-MESH/classes/http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23C04.557.580.625.650.510/mappings",
+            "ui": "http://bioportal.bioontology.org/ontologies/RH-MESH?p=classes&conceptid=http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23C04.557.580.625.650.510",
+            "@context": {
+              "self": "http://www.w3.org/2002/07/owl#Class",
+              "ontology": "http://data.bioontology.org/metadata/Ontology",
+              "children": "http://www.w3.org/2002/07/owl#Class",
+              "parents": "http://www.w3.org/2002/07/owl#Class",
+              "descendants": "http://www.w3.org/2002/07/owl#Class",
+              "ancestors": "http://www.w3.org/2002/07/owl#Class",
+              "instances": "http://data.bioontology.org/metadata/Instance",
+              "tree": "http://www.w3.org/2002/07/owl#Class",
+              "notes": "http://data.bioontology.org/metadata/Note",
+              "mappings": "http://data.bioontology.org/metadata/Mapping",
+              "ui": "http://www.w3.org/2002/07/owl#Class"
+            }
+          },
+          "@context": {
+            "@vocab": "http://data.bioontology.org/metadata/",
+            "prefLabel": "http://www.w3.org/2004/02/skos/core#prefLabel",
+            "obsolete": "http://www.w3.org/2002/07/owl#deprecated",
+            "@language": "en"
+          }
+        },
+        {
+          "prefLabel": "Melanoma",
+          "obsolete": false,
+          "matchType": "prefLabel",
+          "ontologyType": "ONTOLOGY",
+          "@id": "http://phenomebrowser.net/ontologies/mesh/mesh.owl#C04.557.665.510",
+          "@type": "http://www.w3.org/2002/07/owl#Class",
+          "links": {
+            "self": "https://data.bioontology.org/ontologies/RH-MESH/classes/http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23C04.557.665.510",
+            "ontology": "https://data.bioontology.org/ontologies/RH-MESH",
+            "children": "https://data.bioontology.org/ontologies/RH-MESH/classes/http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23C04.557.665.510/children",
+            "parents": "https://data.bioontology.org/ontologies/RH-MESH/classes/http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23C04.557.665.510/parents",
+            "descendants": "https://data.bioontology.org/ontologies/RH-MESH/classes/http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23C04.557.665.510/descendants",
+            "ancestors": "https://data.bioontology.org/ontologies/RH-MESH/classes/http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23C04.557.665.510/ancestors",
+            "instances": "https://data.bioontology.org/ontologies/RH-MESH/classes/http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23C04.557.665.510/instances",
+            "tree": "https://data.bioontology.org/ontologies/RH-MESH/classes/http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23C04.557.665.510/tree",
+            "notes": "https://data.bioontology.org/ontologies/RH-MESH/classes/http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23C04.557.665.510/notes",
+            "mappings": "https://data.bioontology.org/ontologies/RH-MESH/classes/http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23C04.557.665.510/mappings",
+            "ui": "http://bioportal.bioontology.org/ontologies/RH-MESH?p=classes&conceptid=http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23C04.557.665.510",
+            "@context": {
+              "self": "http://www.w3.org/2002/07/owl#Class",
+              "ontology": "http://data.bioontology.org/metadata/Ontology",
+              "children": "http://www.w3.org/2002/07/owl#Class",
+              "parents": "http://www.w3.org/2002/07/owl#Class",
+              "descendants": "http://www.w3.org/2002/07/owl#Class",
+              "ancestors": "http://www.w3.org/2002/07/owl#Class",
+              "instances": "http://data.bioontology.org/metadata/Instance",
+              "tree": "http://www.w3.org/2002/07/owl#Class",
+              "notes": "http://data.bioontology.org/metadata/Note",
+              "mappings": "http://data.bioontology.org/metadata/Mapping",
+              "ui": "http://www.w3.org/2002/07/owl#Class"
+            }
+          },
+          "@context": {
+            "@vocab": "http://data.bioontology.org/metadata/",
+            "prefLabel": "http://www.w3.org/2004/02/skos/core#prefLabel",
+            "obsolete": "http://www.w3.org/2002/07/owl#deprecated",
+            "@language": "en"
+          }
+        },
+        {
+          "prefLabel": "Melanoma",
+          "obsolete": false,
+          "matchType": "prefLabel",
+          "ontologyType": "ONTOLOGY",
+          "@id": "http://phenomebrowser.net/ontologies/mesh/mesh.owl#D008545",
+          "@type": "http://www.w3.org/2002/07/owl#Class",
+          "links": {
+            "self": "https://data.bioontology.org/ontologies/RH-MESH/classes/http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23D008545",
+            "ontology": "https://data.bioontology.org/ontologies/RH-MESH",
+            "children": "https://data.bioontology.org/ontologies/RH-MESH/classes/http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23D008545/children",
+            "parents": "https://data.bioontology.org/ontologies/RH-MESH/classes/http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23D008545/parents",
+            "descendants": "https://data.bioontology.org/ontologies/RH-MESH/classes/http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23D008545/descendants",
+            "ancestors": "https://data.bioontology.org/ontologies/RH-MESH/classes/http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23D008545/ancestors",
+            "instances": "https://data.bioontology.org/ontologies/RH-MESH/classes/http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23D008545/instances",
+            "tree": "https://data.bioontology.org/ontologies/RH-MESH/classes/http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23D008545/tree",
+            "notes": "https://data.bioontology.org/ontologies/RH-MESH/classes/http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23D008545/notes",
+            "mappings": "https://data.bioontology.org/ontologies/RH-MESH/classes/http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23D008545/mappings",
+            "ui": "http://bioportal.bioontology.org/ontologies/RH-MESH?p=classes&conceptid=http%3A%2F%2Fphenomebrowser.net%2Fontologies%2Fmesh%2Fmesh.owl%23D008545",
+            "@context": {
+              "self": "http://www.w3.org/2002/07/owl#Class",
+              "ontology": "http://data.bioontology.org/metadata/Ontology",
+              "children": "http://www.w3.org/2002/07/owl#Class",
+              "parents": "http://www.w3.org/2002/07/owl#Class",
+              "descendants": "http://www.w3.org/2002/07/owl#Class",
+              "ancestors": "http://www.w3.org/2002/07/owl#Class",
+              "instances": "http://data.bioontology.org/metadata/Instance",
+              "tree": "http://www.w3.org/2002/07/owl#Class",
+              "notes": "http://data.bioontology.org/metadata/Note",
+              "mappings": "http://data.bioontology.org/metadata/Mapping",
+              "ui": "http://www.w3.org/2002/07/owl#Class"
+            }
+          },
+          "@context": {
+            "@vocab": "http://data.bioontology.org/metadata/",
+            "prefLabel": "http://www.w3.org/2004/02/skos/core#prefLabel",
+            "obsolete": "http://www.w3.org/2002/07/owl#deprecated",
+            "@language": "en"
+          }
+        }
+      ]
+    }
+  }
+}

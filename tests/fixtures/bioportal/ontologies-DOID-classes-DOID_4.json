@@ -1,0 +1,65 @@
+{
+  "recorded_on": "2026-11-11",
+  "request": {
+    "method": "GET",
+    "url": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_4"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "prefLabel": "disease",
+      "synonym": [],
+      "definition": [
+        "A disease is a disposition (i) to undergo pathological processes that (ii) exists in an organism because of one or more disorders in that organism."
+      ],
+      "cui": [],
+      "semanticType": [],
+      "obsolete": false,
+      "created": null,
+      "modified": null,
+      "memberOf": [],
+      "inScheme": [],
+      "@id": "http://purl.obolibrary.org/obo/DOID_4",
+      "@type": "http://www.w3.org/2002/07/owl#Class",
+      "links": {
+        "self": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_4",
+        "ontology": "https://data.bioontology.org/ontologies/DOID",
+        "children": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_4/children",
+        "parents": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_4/parents",
+        "descendants": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_4/descendants",
+        "ancestors": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_4/ancestors",
+        "instances": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_4/instances",
+        "tree": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_4/tree",
+        "notes": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_4/notes",
+        "mappings": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_4/mappings",
+        "ui": "http://bioportal.bioontology.org/ontologies/DOID?p=classes&conceptid=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_4",
+        "@context": {
+          "self": "http://www.w3.org/2002/07/owl#Class",
+          "ontology": "http://data.bioontology.org/metadata/Ontology",
+          "children": "http://www.w3.org/2002/07/owl#Class",
+          "parents": "http://www.w3.org/2002/07/owl#Class",
+          "descendants": "http://www.w3.org/2002/07/owl#Class",
+          "ancestors": "http://www.w3.org/2002/07/owl#Class",
+          "instances": "http://data.bioontology.org/metadata/Instance",
+          "tree": "http://www.w3.org/2002/07/owl#Class",
+          "notes": "http://data.bioontology.org/metadata/Note",
+          "mappings": "http://data.bioontology.org/metadata/Mapping",
+          "ui": "http://www.w3.org/2002/07/owl#Class"
+        }
+      },
+      "@context": {
+        "@vocab": "http://data.bioontology.org/metadata/",
+        "prefLabel": "http://www.w3.org/2004/02/skos/core#prefLabel",
+        "synonym": "http://www.w3.org/2004/02/skos/core#altLabel",
+        "definition": "http://www.w3.org/2004/02/skos/core#definition",
+        "obsolete": "http://www.w3.org/2002/07/owl#deprecated",
+        "semanticType": "http://bioportal.bioontology.org/ontologies/umls/hasSTY",
+        "cui": "http://bioportal.bioontology.org/ontologies/umls/cui",
+        "inScheme": "http://www.w3.org/2004/02/skos/core#inScheme",
+        "created": "http://purl.org/dc/terms/created",
+        "modified": "http://purl.org/dc/terms/modified",
+        "@language": []
+      }
+    }
+  }
+}

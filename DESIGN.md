@@ -103,12 +103,17 @@ Every tool ships with:
 
 1. **Mocked unit tests** using `respx`. The bulk of coverage. No network, deterministic,
    fast. Validate URL construction, response parsing, error mapping, input validation.
-2. **One `@pytest.mark.live` test** per tool. Hits the real BioPortal API. Skipped by
-   default (`addopts = "-m 'not live'"` in `pyproject.toml`). Purpose: guard against
-   BioPortal silently changing their response shape.
+2. **At least one replay test** per tool. It serves the tool an answer recorded from the
+   real BioPortal API and stored under `tests/fixtures/bioportal/`. Replay tests run by
+   default and need neither the network nor a key. Each answer is stored as BioPortal
+   sent it, except the ontology catalog, which keeps every entry but only the fields the
+   server reads.
 
-The live tests intentionally don't replicate the unit-test coverage. They're a shape-drift
-canary, not a comprehensive suite.
+The replay tests intentionally don't replicate the unit-test coverage. They check that the
+tools parse what BioPortal actually returns, which a hand-written mock only approximates.
+The recorded answers stay fixed, so the tests notice a change at BioPortal only when
+`tests/record_bioportal_answers.py` re-records them. A replay test that fails after
+re-recording shows that BioPortal changed its answer.
 
 ## Principle 8: Pydantic output models, not raw dicts
 

@@ -1,0 +1,103 @@
+{
+  "recorded_on": "2026-11-11",
+  "request": {
+    "method": "GET",
+    "url": "https://data.bioontology.org/ontologies/DOID"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "administeredBy": [
+        "https://data.bioontology.org/users/lynn.schriml%40gmail.com",
+        "https://data.bioontology.org/users/allenbaron"
+      ],
+      "acronym": "DOID",
+      "name": "Human Disease Ontology",
+      "summaryOnly": false,
+      "flat": false,
+      "ontologyType": "https://data.bioontology.org/ontology_types/ONTOLOGY",
+      "reviews": [],
+      "notes": [
+        "https://data.bioontology.org/notes/fe8a7cb9-aaea-4041-988a-51f1a7a0008d",
+        "https://data.bioontology.org/notes/7d55f313-cd61-446b-9147-6c78d804f81b",
+        "https://data.bioontology.org/notes/ed875222-37bd-49e9-b717-fa9161421eb3",
+        "https://data.bioontology.org/notes/26c3413b-0be3-44ee-950d-794414ae5a3e",
+        "https://data.bioontology.org/notes/57e4f796-666d-4db6-94f5-f4f347facbd9"
+      ],
+      "projects": [
+        "https://data.bioontology.org/projects/Epiwork",
+        "https://data.bioontology.org/projects/Gemma",
+        "https://data.bioontology.org/projects/PractiKPharma",
+        "https://data.bioontology.org/projects/CHEAR",
+        "https://data.bioontology.org/projects/FlyBase",
+        "https://data.bioontology.org/projects/RGO",
+        "https://data.bioontology.org/projects/Xenbase",
+        "https://data.bioontology.org/projects/Neurocarta",
+        "https://data.bioontology.org/projects/BSQA",
+        "https://data.bioontology.org/projects/DisGeNET-RDF"
+      ],
+      "@id": "https://data.bioontology.org/ontologies/DOID",
+      "@type": "http://data.bioontology.org/metadata/Ontology",
+      "links": {
+        "submissions": "https://data.bioontology.org/ontologies/DOID/submissions",
+        "properties": "https://data.bioontology.org/ontologies/DOID/properties",
+        "classes": "https://data.bioontology.org/ontologies/DOID/classes",
+        "single_class": "https://data.bioontology.org/ontologies/DOID/classes/{class_id}",
+        "roots": "https://data.bioontology.org/ontologies/DOID/classes/roots",
+        "schemes": "https://data.bioontology.org/ontologies/DOID/schemes",
+        "collections": "https://data.bioontology.org/ontologies/DOID/collections",
+        "xl_labels": "https://data.bioontology.org/ontologies/DOID/skos_xl_labels",
+        "instances": "https://data.bioontology.org/ontologies/DOID/instances",
+        "metrics": "https://data.bioontology.org/ontologies/DOID/metrics",
+        "reviews": "https://data.bioontology.org/ontologies/DOID/reviews",
+        "notes": "https://data.bioontology.org/ontologies/DOID/notes",
+        "groups": "https://data.bioontology.org/ontologies/DOID/groups",
+        "categories": "https://data.bioontology.org/ontologies/DOID/categories",
+        "latest_submission": "https://data.bioontology.org/ontologies/DOID/latest_submission",
+        "projects": "https://data.bioontology.org/ontologies/DOID/projects",
+        "download": "https://data.bioontology.org/ontologies/DOID/download",
+        "views": "https://data.bioontology.org/ontologies/DOID/views",
+        "analytics": "https://data.bioontology.org/ontologies/DOID/analytics",
+        "ui": "http://bioportal.bioontology.org/ontologies/DOID",
+        "@context": {
+          "submissions": "http://data.bioontology.org/metadata/OntologySubmission",
+          "properties": "http://data.bioontology.org/metadata/Property",
+          "classes": "http://www.w3.org/2002/07/owl#Class",
+          "single_class": "http://www.w3.org/2002/07/owl#Class",
+          "roots": "http://www.w3.org/2002/07/owl#Class",
+          "schemes": "http://www.w3.org/2004/02/skos/core#ConceptScheme",
+          "collections": "http://www.w3.org/2004/02/skos/core#Collection",
+          "xl_labels": "http://www.w3.org/2008/05/skos-xl#Label",
+          "instances": "http://data.bioontology.org/metadata/Instance",
+          "metrics": "http://data.bioontology.org/metadata/Metrics",
+          "reviews": "http://data.bioontology.org/metadata/Review",
+          "notes": "http://data.bioontology.org/metadata/Note",
+          "groups": "http://data.bioontology.org/metadata/Group",
+          "categories": "http://data.bioontology.org/metadata/Category",
+          "latest_submission": "http://data.bioontology.org/metadata/OntologySubmission",
+          "projects": "http://data.bioontology.org/metadata/Project",
+          "download": "http://data.bioontology.org/metadata/Ontology",
+          "views": "http://data.bioontology.org/metadata/Ontology",
+          "analytics": "http://data.bioontology.org/metadata/Analytics",
+          "ui": "http://data.bioontology.org/metadata/Ontology"
+        }
+      },
+      "@context": {
+        "@vocab": "http://data.bioontology.org/metadata/",
+        "acronym": "http://omv.ontoware.org/2005/05/ontology#acronym",
+        "name": "http://omv.ontoware.org/2005/05/ontology#name",
+        "administeredBy": {
+          "@id": "http://data.bioontology.org/metadata/User",
+          "@type": "@id"
+        },
+        "flat": "http://data.bioontology.org/metadata/flat",
+        "summaryOnly": "http://data.bioontology.org/metadata/summaryOnly",
+        "ontologyType": {
+          "@id": "http://data.bioontology.org/metadata/OntologyType",
+          "@type": "@id"
+        },
+        "@language": "en"
+      }
+    }
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "recorded_on": "2026-11-11",
+  "request": {
+    "method": "GET",
+    "url": "https://data.bioontology.org/ontologies/HRAVS/classes/https%3A%2F%2Fpurl.humanatlas.io%2Fvocab%2Fhravs%23HRAVS_1000161"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "prefLabel": "Area unit",
+      "synonym": [],
+      "definition": [
+        "This is a set of permissible values for 'area unit' field within the context of the HuBMAP project."
+      ],
+      "cui": [],
+      "semanticType": [],
+      "obsolete": false,
+      "created": null,
+      "modified": null,
+      "memberOf": [],
+      "inScheme": [
+        "https://purl.humanatlas.io/vocab/hravs"
+      ],
+      "@id": "https://purl.humanatlas.io/vocab/hravs#HRAVS_1000161",
+      "@type": "http://www.w3.org/2004/02/skos/core#Concept",
+      "links": {
+        "self": "https://data.bioontology.org/ontologies/HRAVS/classes/https%3A%2F%2Fpurl.humanatlas.io%2Fvocab%2Fhravs%23HRAVS_1000161",
+        "ontology": "https://data.bioontology.org/ontologies/HRAVS",
+        "children": "https://data.bioontology.org/ontologies/HRAVS/classes/https%3A%2F%2Fpurl.humanatlas.io%2Fvocab%2Fhravs%23HRAVS_1000161/children",
+        "parents": "https://data.bioontology.org/ontologies/HRAVS/classes/https%3A%2F%2Fpurl.humanatlas.io%2Fvocab%2Fhravs%23HRAVS_1000161/parents",
+        "descendants": "https://data.bioontology.org/ontologies/HRAVS/classes/https%3A%2F%2Fpurl.humanatlas.io%2Fvocab%2Fhravs%23HRAVS_1000161/descendants",
+        "ancestors": "https://data.bioontology.org/ontologies/HRAVS/classes/https%3A%2F%2Fpurl.humanatlas.io%2Fvocab%2Fhravs%23HRAVS_1000161/ancestors",
+        "instances": "https://data.bioontology.org/ontologies/HRAVS/classes/https%3A%2F%2Fpurl.humanatlas.io%2Fvocab%2Fhravs%23HRAVS_1000161/instances",
+        "tree": "https://data.bioontology.org/ontologies/HRAVS/classes/https%3A%2F%2Fpurl.humanatlas.io%2Fvocab%2Fhravs%23HRAVS_1000161/tree",
+        "notes": "https://data.bioontology.org/ontologies/HRAVS/classes/https%3A%2F%2Fpurl.humanatlas.io%2Fvocab%2Fhravs%23HRAVS_1000161/notes",
+        "mappings": "https://data.bioontology.org/ontologies/HRAVS/classes/https%3A%2F%2Fpurl.humanatlas.io%2Fvocab%2Fhravs%23HRAVS_1000161/mappings",
+        "ui": "http://bioportal.bioontology.org/ontologies/HRAVS?p=classes&conceptid=https%3A%2F%2Fpurl.humanatlas.io%2Fvocab%2Fhravs%23HRAVS_1000161",
+        "@context": {
+          "self": "http://www.w3.org/2002/07/owl#Class",
+          "ontology": "http://data.bioontology.org/metadata/Ontology",
+          "children": "http://www.w3.org/2002/07/owl#Class",
+          "parents": "http://www.w3.org/2002/07/owl#Class",
+          "descendants": "http://www.w3.org/2002/07/owl#Class",
+          "ancestors": "http://www.w3.org/2002/07/owl#Class",
+          "instances": "http://data.bioontology.org/metadata/Instance",
+          "tree": "http://www.w3.org/2002/07/owl#Class",
+          "notes": "http://data.bioontology.org/metadata/Note",
+          "mappings": "http://data.bioontology.org/metadata/Mapping",
+          "ui": "http://www.w3.org/2002/07/owl#Class"
+        }
+      },
+      "@context": {
+        "@vocab": "http://data.bioontology.org/metadata/",
+        "prefLabel": "http://www.w3.org/2004/02/skos/core#prefLabel",
+        "synonym": "http://www.w3.org/2004/02/skos/core#altLabel",
+        "definition": "http://www.w3.org/2004/02/skos/core#definition",
+        "obsolete": "http://www.w3.org/2002/07/owl#deprecated",
+        "semanticType": "http://bioportal.bioontology.org/ontologies/umls/hasSTY",
+        "cui": "http://bioportal.bioontology.org/ontologies/umls/cui",
+        "inScheme": "http://www.w3.org/2004/02/skos/core#inScheme",
+        "created": "http://purl.org/dc/terms/created",
+        "modified": "http://purl.org/dc/terms/modified",
+        "@language": []
+      }
+    }
+  }
+}

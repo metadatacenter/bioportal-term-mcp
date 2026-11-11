@@ -17,5 +17,7 @@ After those three, the code is self-explanatory. Patterns to mirror:
 - Tool docstrings and Pydantic Field descriptions must stay domain-agnostic. Do not
   reference downstream consumers — see DESIGN.md Principle 1.
 - Each tool ships with: a happy-path mocked test, parametrized validation tests,
-  error-path mocked tests, and one opt-in `@pytest.mark.live` test.
+  error-path mocked tests, and at least one replay test that serves a recorded BioPortal
+  answer. `tests/record_bioportal_answers.py` records those answers. Add each new replay
+  test's tool call to its `RECORDED_CALLS` and re-record.
 - See `get_class` for the canonical pattern across all of these.

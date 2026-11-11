@@ -1,0 +1,486 @@
+{
+  "recorded_on": "2026-11-11",
+  "request": {
+    "method": "GET",
+    "url": "https://data.bioontology.org/search?q=disease&pagesize=10&ontologies=DOID"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "page": 1,
+      "pageCount": 156,
+      "totalCount": 1557,
+      "prevPage": null,
+      "nextPage": 2,
+      "links": {
+        "nextPage": "https://data.bioontology.org/search?q=disease&pagesize=10&ontologies=DOID&page=2",
+        "prevPage": null
+      },
+      "collection": [
+        {
+          "prefLabel": "disease",
+          "definition": [
+            "A disease is a disposition (i) to undergo pathological processes that (ii) exists in an organism because of one or more disorders in that organism."
+          ],
+          "obsolete": false,
+          "matchType": "prefLabel",
+          "ontologyType": "ONTOLOGY",
+          "@id": "http://purl.obolibrary.org/obo/DOID_4",
+          "@type": "http://www.w3.org/2002/07/owl#Class",
+          "links": {
+            "self": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_4",
+            "ontology": "https://data.bioontology.org/ontologies/DOID",
+            "children": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_4/children",
+            "parents": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_4/parents",
+            "descendants": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_4/descendants",
+            "ancestors": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_4/ancestors",
+            "instances": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_4/instances",
+            "tree": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_4/tree",
+            "notes": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_4/notes",
+            "mappings": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_4/mappings",
+            "ui": "http://bioportal.bioontology.org/ontologies/DOID?p=classes&conceptid=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_4",
+            "@context": {
+              "self": "http://www.w3.org/2002/07/owl#Class",
+              "ontology": "http://data.bioontology.org/metadata/Ontology",
+              "children": "http://www.w3.org/2002/07/owl#Class",
+              "parents": "http://www.w3.org/2002/07/owl#Class",
+              "descendants": "http://www.w3.org/2002/07/owl#Class",
+              "ancestors": "http://www.w3.org/2002/07/owl#Class",
+              "instances": "http://data.bioontology.org/metadata/Instance",
+              "tree": "http://www.w3.org/2002/07/owl#Class",
+              "notes": "http://data.bioontology.org/metadata/Note",
+              "mappings": "http://data.bioontology.org/metadata/Mapping",
+              "ui": "http://www.w3.org/2002/07/owl#Class"
+            }
+          },
+          "@context": {
+            "@vocab": "http://data.bioontology.org/metadata/",
+            "prefLabel": "http://www.w3.org/2004/02/skos/core#prefLabel",
+            "definition": "http://www.w3.org/2004/02/skos/core#definition",
+            "obsolete": "http://www.w3.org/2002/07/owl#deprecated",
+            "@language": "en"
+          }
+        },
+        {
+          "prefLabel": "Hirata disease",
+          "synonym": [
+            "insulin autoimmune syndrome"
+          ],
+          "definition": [
+            "An autoimmune disease of endocrine system characterized by hypoglycemia caused by antibodies to insulin."
+          ],
+          "obsolete": false,
+          "matchType": "prefLabel",
+          "ontologyType": "ONTOLOGY",
+          "@id": "http://purl.obolibrary.org/obo/DOID_0040100",
+          "@type": "http://www.w3.org/2002/07/owl#Class",
+          "links": {
+            "self": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0040100",
+            "ontology": "https://data.bioontology.org/ontologies/DOID",
+            "children": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0040100/children",
+            "parents": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0040100/parents",
+            "descendants": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0040100/descendants",
+            "ancestors": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0040100/ancestors",
+            "instances": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0040100/instances",
+            "tree": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0040100/tree",
+            "notes": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0040100/notes",
+            "mappings": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0040100/mappings",
+            "ui": "http://bioportal.bioontology.org/ontologies/DOID?p=classes&conceptid=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0040100",
+            "@context": {
+              "self": "http://www.w3.org/2002/07/owl#Class",
+              "ontology": "http://data.bioontology.org/metadata/Ontology",
+              "children": "http://www.w3.org/2002/07/owl#Class",
+              "parents": "http://www.w3.org/2002/07/owl#Class",
+              "descendants": "http://www.w3.org/2002/07/owl#Class",
+              "ancestors": "http://www.w3.org/2002/07/owl#Class",
+              "instances": "http://data.bioontology.org/metadata/Instance",
+              "tree": "http://www.w3.org/2002/07/owl#Class",
+              "notes": "http://data.bioontology.org/metadata/Note",
+              "mappings": "http://data.bioontology.org/metadata/Mapping",
+              "ui": "http://www.w3.org/2002/07/owl#Class"
+            }
+          },
+          "@context": {
+            "@vocab": "http://data.bioontology.org/metadata/",
+            "prefLabel": "http://www.w3.org/2004/02/skos/core#prefLabel",
+            "synonym": "http://www.w3.org/2004/02/skos/core#altLabel",
+            "definition": "http://www.w3.org/2004/02/skos/core#definition",
+            "obsolete": "http://www.w3.org/2002/07/owl#deprecated",
+            "@language": "en"
+          }
+        },
+        {
+          "prefLabel": "Keshan disease",
+          "definition": [
+            "A nutritional deficiency that is disease characterized by a cardiomyopathy secondary to selenium deficiency."
+          ],
+          "obsolete": false,
+          "matchType": "prefLabel",
+          "ontologyType": "ONTOLOGY",
+          "@id": "http://purl.obolibrary.org/obo/DOID_0050083",
+          "@type": "http://www.w3.org/2002/07/owl#Class",
+          "links": {
+            "self": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050083",
+            "ontology": "https://data.bioontology.org/ontologies/DOID",
+            "children": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050083/children",
+            "parents": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050083/parents",
+            "descendants": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050083/descendants",
+            "ancestors": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050083/ancestors",
+            "instances": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050083/instances",
+            "tree": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050083/tree",
+            "notes": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050083/notes",
+            "mappings": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050083/mappings",
+            "ui": "http://bioportal.bioontology.org/ontologies/DOID?p=classes&conceptid=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050083",
+            "@context": {
+              "self": "http://www.w3.org/2002/07/owl#Class",
+              "ontology": "http://data.bioontology.org/metadata/Ontology",
+              "children": "http://www.w3.org/2002/07/owl#Class",
+              "parents": "http://www.w3.org/2002/07/owl#Class",
+              "descendants": "http://www.w3.org/2002/07/owl#Class",
+              "ancestors": "http://www.w3.org/2002/07/owl#Class",
+              "instances": "http://data.bioontology.org/metadata/Instance",
+              "tree": "http://www.w3.org/2002/07/owl#Class",
+              "notes": "http://data.bioontology.org/metadata/Note",
+              "mappings": "http://data.bioontology.org/metadata/Mapping",
+              "ui": "http://www.w3.org/2002/07/owl#Class"
+            }
+          },
+          "@context": {
+            "@vocab": "http://data.bioontology.org/metadata/",
+            "prefLabel": "http://www.w3.org/2004/02/skos/core#prefLabel",
+            "definition": "http://www.w3.org/2004/02/skos/core#definition",
+            "obsolete": "http://www.w3.org/2002/07/owl#deprecated",
+            "@language": "en"
+          }
+        },
+        {
+          "prefLabel": "monogenic disease",
+          "definition": [
+            "A genetic disease that is the result of one or more abnormal alleles and may be dominant, semi-dominant, or recessive."
+          ],
+          "obsolete": false,
+          "matchType": "prefLabel",
+          "ontologyType": "ONTOLOGY",
+          "@id": "http://purl.obolibrary.org/obo/DOID_0050177",
+          "@type": "http://www.w3.org/2002/07/owl#Class",
+          "links": {
+            "self": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050177",
+            "ontology": "https://data.bioontology.org/ontologies/DOID",
+            "children": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050177/children",
+            "parents": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050177/parents",
+            "descendants": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050177/descendants",
+            "ancestors": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050177/ancestors",
+            "instances": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050177/instances",
+            "tree": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050177/tree",
+            "notes": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050177/notes",
+            "mappings": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050177/mappings",
+            "ui": "http://bioportal.bioontology.org/ontologies/DOID?p=classes&conceptid=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050177",
+            "@context": {
+              "self": "http://www.w3.org/2002/07/owl#Class",
+              "ontology": "http://data.bioontology.org/metadata/Ontology",
+              "children": "http://www.w3.org/2002/07/owl#Class",
+              "parents": "http://www.w3.org/2002/07/owl#Class",
+              "descendants": "http://www.w3.org/2002/07/owl#Class",
+              "ancestors": "http://www.w3.org/2002/07/owl#Class",
+              "instances": "http://data.bioontology.org/metadata/Instance",
+              "tree": "http://www.w3.org/2002/07/owl#Class",
+              "notes": "http://data.bioontology.org/metadata/Note",
+              "mappings": "http://data.bioontology.org/metadata/Mapping",
+              "ui": "http://www.w3.org/2002/07/owl#Class"
+            }
+          },
+          "@context": {
+            "@vocab": "http://data.bioontology.org/metadata/",
+            "prefLabel": "http://www.w3.org/2004/02/skos/core#prefLabel",
+            "definition": "http://www.w3.org/2004/02/skos/core#definition",
+            "obsolete": "http://www.w3.org/2002/07/owl#deprecated",
+            "@language": "en"
+          }
+        },
+        {
+          "prefLabel": "Carrion's disease",
+          "synonym": [
+            "Carrion disease",
+            "Oroya fever"
+          ],
+          "definition": [
+            "A bartonellosis that results_in infection located_in endothelial cells or located_in red blood cells, has_material_basis_in Bartonella bacilliformis, which is transmitted_by sandflies of genus Lutzomyia. The infection has acute and chronic phases. The acute phase is characterized by severe hemolytic anemia and transient immunosuppression. The chronic phase is characterized by verruga peruana lesions which may ulcerate and bleed."
+          ],
+          "obsolete": false,
+          "matchType": "prefLabel",
+          "ontologyType": "ONTOLOGY",
+          "@id": "http://purl.obolibrary.org/obo/DOID_0050398",
+          "@type": "http://www.w3.org/2002/07/owl#Class",
+          "links": {
+            "self": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050398",
+            "ontology": "https://data.bioontology.org/ontologies/DOID",
+            "children": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050398/children",
+            "parents": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050398/parents",
+            "descendants": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050398/descendants",
+            "ancestors": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050398/ancestors",
+            "instances": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050398/instances",
+            "tree": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050398/tree",
+            "notes": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050398/notes",
+            "mappings": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050398/mappings",
+            "ui": "http://bioportal.bioontology.org/ontologies/DOID?p=classes&conceptid=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050398",
+            "@context": {
+              "self": "http://www.w3.org/2002/07/owl#Class",
+              "ontology": "http://data.bioontology.org/metadata/Ontology",
+              "children": "http://www.w3.org/2002/07/owl#Class",
+              "parents": "http://www.w3.org/2002/07/owl#Class",
+              "descendants": "http://www.w3.org/2002/07/owl#Class",
+              "ancestors": "http://www.w3.org/2002/07/owl#Class",
+              "instances": "http://data.bioontology.org/metadata/Instance",
+              "tree": "http://www.w3.org/2002/07/owl#Class",
+              "notes": "http://data.bioontology.org/metadata/Note",
+              "mappings": "http://data.bioontology.org/metadata/Mapping",
+              "ui": "http://www.w3.org/2002/07/owl#Class"
+            }
+          },
+          "@context": {
+            "@vocab": "http://data.bioontology.org/metadata/",
+            "prefLabel": "http://www.w3.org/2004/02/skos/core#prefLabel",
+            "synonym": "http://www.w3.org/2004/02/skos/core#altLabel",
+            "definition": "http://www.w3.org/2004/02/skos/core#definition",
+            "obsolete": "http://www.w3.org/2002/07/owl#deprecated",
+            "@language": "en"
+          }
+        },
+        {
+          "prefLabel": "Danon disease",
+          "synonym": [
+            "ANTOPOL DISEASE",
+            "PSEUDOGLYCOGENOSIS II"
+          ],
+          "definition": [
+            "A lysosomal storage disease that is characterized by cardiomyopathy, skeletal myopathy and intellectual disability and has_material_basis_in mutations in the LAMP2 gene."
+          ],
+          "obsolete": false,
+          "matchType": "prefLabel",
+          "ontologyType": "ONTOLOGY",
+          "@id": "http://purl.obolibrary.org/obo/DOID_0050437",
+          "@type": "http://www.w3.org/2002/07/owl#Class",
+          "links": {
+            "self": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050437",
+            "ontology": "https://data.bioontology.org/ontologies/DOID",
+            "children": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050437/children",
+            "parents": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050437/parents",
+            "descendants": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050437/descendants",
+            "ancestors": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050437/ancestors",
+            "instances": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050437/instances",
+            "tree": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050437/tree",
+            "notes": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050437/notes",
+            "mappings": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050437/mappings",
+            "ui": "http://bioportal.bioontology.org/ontologies/DOID?p=classes&conceptid=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050437",
+            "@context": {
+              "self": "http://www.w3.org/2002/07/owl#Class",
+              "ontology": "http://data.bioontology.org/metadata/Ontology",
+              "children": "http://www.w3.org/2002/07/owl#Class",
+              "parents": "http://www.w3.org/2002/07/owl#Class",
+              "descendants": "http://www.w3.org/2002/07/owl#Class",
+              "ancestors": "http://www.w3.org/2002/07/owl#Class",
+              "instances": "http://data.bioontology.org/metadata/Instance",
+              "tree": "http://www.w3.org/2002/07/owl#Class",
+              "notes": "http://data.bioontology.org/metadata/Note",
+              "mappings": "http://data.bioontology.org/metadata/Mapping",
+              "ui": "http://www.w3.org/2002/07/owl#Class"
+            }
+          },
+          "@context": {
+            "@vocab": "http://data.bioontology.org/metadata/",
+            "prefLabel": "http://www.w3.org/2004/02/skos/core#prefLabel",
+            "synonym": "http://www.w3.org/2004/02/skos/core#altLabel",
+            "definition": "http://www.w3.org/2004/02/skos/core#definition",
+            "obsolete": "http://www.w3.org/2002/07/owl#deprecated",
+            "@language": "en"
+          }
+        },
+        {
+          "prefLabel": "Dent disease",
+          "synonym": [
+            "Dent's disease",
+            "X-linked hypercalciuric nephrocalcinosis"
+          ],
+          "definition": [
+            "A renal tubular transport disease that is characterized by tubular proteinuria, hypercalciuria, calcium nephrolithiasis, nephrocalcinosis and chronic kidney failure."
+          ],
+          "obsolete": false,
+          "matchType": "prefLabel",
+          "ontologyType": "ONTOLOGY",
+          "@id": "http://purl.obolibrary.org/obo/DOID_0050699",
+          "@type": "http://www.w3.org/2002/07/owl#Class",
+          "links": {
+            "self": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050699",
+            "ontology": "https://data.bioontology.org/ontologies/DOID",
+            "children": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050699/children",
+            "parents": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050699/parents",
+            "descendants": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050699/descendants",
+            "ancestors": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050699/ancestors",
+            "instances": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050699/instances",
+            "tree": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050699/tree",
+            "notes": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050699/notes",
+            "mappings": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050699/mappings",
+            "ui": "http://bioportal.bioontology.org/ontologies/DOID?p=classes&conceptid=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050699",
+            "@context": {
+              "self": "http://www.w3.org/2002/07/owl#Class",
+              "ontology": "http://data.bioontology.org/metadata/Ontology",
+              "children": "http://www.w3.org/2002/07/owl#Class",
+              "parents": "http://www.w3.org/2002/07/owl#Class",
+              "descendants": "http://www.w3.org/2002/07/owl#Class",
+              "ancestors": "http://www.w3.org/2002/07/owl#Class",
+              "instances": "http://data.bioontology.org/metadata/Instance",
+              "tree": "http://www.w3.org/2002/07/owl#Class",
+              "notes": "http://data.bioontology.org/metadata/Note",
+              "mappings": "http://data.bioontology.org/metadata/Mapping",
+              "ui": "http://www.w3.org/2002/07/owl#Class"
+            }
+          },
+          "@context": {
+            "@vocab": "http://data.bioontology.org/metadata/",
+            "prefLabel": "http://www.w3.org/2004/02/skos/core#prefLabel",
+            "synonym": "http://www.w3.org/2004/02/skos/core#altLabel",
+            "definition": "http://www.w3.org/2004/02/skos/core#definition",
+            "obsolete": "http://www.w3.org/2002/07/owl#deprecated",
+            "@language": "en"
+          }
+        },
+        {
+          "prefLabel": "Stargardt disease",
+          "synonym": [
+            "STARGARDT DISEASE 1"
+          ],
+          "definition": [
+            "An age related macular degeneration that is characterized by progressive vision loss usually to the point of legal blindness."
+          ],
+          "obsolete": false,
+          "matchType": "prefLabel",
+          "ontologyType": "ONTOLOGY",
+          "@id": "http://purl.obolibrary.org/obo/DOID_0050817",
+          "@type": "http://www.w3.org/2002/07/owl#Class",
+          "links": {
+            "self": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050817",
+            "ontology": "https://data.bioontology.org/ontologies/DOID",
+            "children": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050817/children",
+            "parents": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050817/parents",
+            "descendants": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050817/descendants",
+            "ancestors": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050817/ancestors",
+            "instances": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050817/instances",
+            "tree": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050817/tree",
+            "notes": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050817/notes",
+            "mappings": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050817/mappings",
+            "ui": "http://bioportal.bioontology.org/ontologies/DOID?p=classes&conceptid=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050817",
+            "@context": {
+              "self": "http://www.w3.org/2002/07/owl#Class",
+              "ontology": "http://data.bioontology.org/metadata/Ontology",
+              "children": "http://www.w3.org/2002/07/owl#Class",
+              "parents": "http://www.w3.org/2002/07/owl#Class",
+              "descendants": "http://www.w3.org/2002/07/owl#Class",
+              "ancestors": "http://www.w3.org/2002/07/owl#Class",
+              "instances": "http://data.bioontology.org/metadata/Instance",
+              "tree": "http://www.w3.org/2002/07/owl#Class",
+              "notes": "http://data.bioontology.org/metadata/Note",
+              "mappings": "http://data.bioontology.org/metadata/Mapping",
+              "ui": "http://www.w3.org/2002/07/owl#Class"
+            }
+          },
+          "@context": {
+            "@vocab": "http://data.bioontology.org/metadata/",
+            "prefLabel": "http://www.w3.org/2004/02/skos/core#prefLabel",
+            "synonym": "http://www.w3.org/2004/02/skos/core#altLabel",
+            "definition": "http://www.w3.org/2004/02/skos/core#definition",
+            "obsolete": "http://www.w3.org/2002/07/owl#deprecated",
+            "@language": "en"
+          }
+        },
+        {
+          "prefLabel": "endocardium disease",
+          "definition": [
+            "A heart disease that is located_in the innermost layer of tissue that lines the chambers of the heart."
+          ],
+          "obsolete": false,
+          "matchType": "prefLabel",
+          "ontologyType": "ONTOLOGY",
+          "@id": "http://purl.obolibrary.org/obo/DOID_0050825",
+          "@type": "http://www.w3.org/2002/07/owl#Class",
+          "links": {
+            "self": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050825",
+            "ontology": "https://data.bioontology.org/ontologies/DOID",
+            "children": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050825/children",
+            "parents": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050825/parents",
+            "descendants": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050825/descendants",
+            "ancestors": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050825/ancestors",
+            "instances": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050825/instances",
+            "tree": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050825/tree",
+            "notes": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050825/notes",
+            "mappings": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050825/mappings",
+            "ui": "http://bioportal.bioontology.org/ontologies/DOID?p=classes&conceptid=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050825",
+            "@context": {
+              "self": "http://www.w3.org/2002/07/owl#Class",
+              "ontology": "http://data.bioontology.org/metadata/Ontology",
+              "children": "http://www.w3.org/2002/07/owl#Class",
+              "parents": "http://www.w3.org/2002/07/owl#Class",
+              "descendants": "http://www.w3.org/2002/07/owl#Class",
+              "ancestors": "http://www.w3.org/2002/07/owl#Class",
+              "instances": "http://data.bioontology.org/metadata/Instance",
+              "tree": "http://www.w3.org/2002/07/owl#Class",
+              "notes": "http://data.bioontology.org/metadata/Note",
+              "mappings": "http://data.bioontology.org/metadata/Mapping",
+              "ui": "http://www.w3.org/2002/07/owl#Class"
+            }
+          },
+          "@context": {
+            "@vocab": "http://data.bioontology.org/metadata/",
+            "prefLabel": "http://www.w3.org/2004/02/skos/core#prefLabel",
+            "definition": "http://www.w3.org/2004/02/skos/core#definition",
+            "obsolete": "http://www.w3.org/2002/07/owl#deprecated",
+            "@language": "en"
+          }
+        },
+        {
+          "prefLabel": "artery disease",
+          "definition": [
+            "A vascular disease that is located_in an artery."
+          ],
+          "obsolete": false,
+          "matchType": "prefLabel",
+          "ontologyType": "ONTOLOGY",
+          "@id": "http://purl.obolibrary.org/obo/DOID_0050828",
+          "@type": "http://www.w3.org/2002/07/owl#Class",
+          "links": {
+            "self": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050828",
+            "ontology": "https://data.bioontology.org/ontologies/DOID",
+            "children": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050828/children",
+            "parents": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050828/parents",
+            "descendants": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050828/descendants",
+            "ancestors": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050828/ancestors",
+            "instances": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050828/instances",
+            "tree": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050828/tree",
+            "notes": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050828/notes",
+            "mappings": "https://data.bioontology.org/ontologies/DOID/classes/http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050828/mappings",
+            "ui": "http://bioportal.bioontology.org/ontologies/DOID?p=classes&conceptid=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FDOID_0050828",
+            "@context": {
+              "self": "http://www.w3.org/2002/07/owl#Class",
+              "ontology": "http://data.bioontology.org/metadata/Ontology",
+              "children": "http://www.w3.org/2002/07/owl#Class",
+              "parents": "http://www.w3.org/2002/07/owl#Class",
+              "descendants": "http://www.w3.org/2002/07/owl#Class",
+              "ancestors": "http://www.w3.org/2002/07/owl#Class",
+              "instances": "http://data.bioontology.org/metadata/Instance",
+              "tree": "http://www.w3.org/2002/07/owl#Class",
+              "notes": "http://data.bioontology.org/metadata/Note",
+              "mappings": "http://data.bioontology.org/metadata/Mapping",
+              "ui": "http://www.w3.org/2002/07/owl#Class"
+            }
+          },
+          "@context": {
+            "@vocab": "http://data.bioontology.org/metadata/",
+            "prefLabel": "http://www.w3.org/2004/02/skos/core#prefLabel",
+            "definition": "http://www.w3.org/2004/02/skos/core#definition",
+            "obsolete": "http://www.w3.org/2002/07/owl#deprecated",
+            "@language": "en"
+          }
+        }
+      ]
+    }
+  }
+}

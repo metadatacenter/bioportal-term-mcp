@@ -30,10 +30,4 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
-# Tests marked `live` actually hit the BioPortal API. They're skipped by default;
-# run them with: uv run pytest -m live
-markers = [
-    "live: integration tests that call the real BioPortal API (requires BIOPORTAL_API_KEY)",
-]
-addopts = "-m 'not live'"
 testpaths = ["tests"]

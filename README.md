@@ -386,7 +386,7 @@ MCP server is reachable from a client, with no BioPortal API call involved.
 
 ## Requirements
 
-- Python 3.11 or newer
+- Python 3.14 or newer
 - [uv](https://docs.astral.sh/uv/) for dependency and venv management
 - A [BioPortal API key](https://bioportal.bioontology.org/account) (free)
 
@@ -439,15 +439,26 @@ Notes:
 
 ```bash
 uv sync --all-extras         # ensures dev dependencies are present
-uv run pytest                # unit tests (no network, fast)
+uv run pytest                # every test (no network, fast)
 uv run pytest -v             # verbose
-uv run pytest -m live        # opt-in: hits the real BioPortal API
 uv run pyright               # static type-checking
 ```
 
-The test suite uses [respx](https://lundberg.github.io/respx/) to mock all HTTP traffic.
-Tests marked `@pytest.mark.live` are deselected by default and only run when explicitly
-requested.
+The test suite makes no network calls and needs no key. It uses
+[respx](https://lundberg.github.io/respx/) to mock all HTTP traffic. Most tests mock a
+minimal response written in the test itself. A smaller set, the replay tests, serves the
+tools answers recorded from BioPortal and stored one file per request under
+`tests/fixtures/bioportal/`. These tests hold the tools to BioPortal's actual response
+shape. Each answer is stored as BioPortal sent it, except the ontology catalog, which
+keeps every entry but only the fields the server reads. To re-record the answers, run the
+recording script with a key:
+
+```bash
+BIOPORTAL_API_KEY=<your-key> uv run python tests/record_bioportal_answers.py
+```
+
+The script makes the same tool calls as the replay tests and never stores the key. A
+replay test that fails after re-recording shows that BioPortal changed its answer.
 
 ## Configuration
 

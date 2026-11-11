@@ -7,13 +7,16 @@ Tested in three layers:
 2. Tool tests with mocked HTTP responses via respx. These are the bulk; they assert
    that the tool constructs the right URL, parses BioPortal's response shape correctly,
    and surfaces errors cleanly. Fast, deterministic, run on every commit.
-3. Optional live tests against the real BioPortal API, gated behind the `live` marker.
-   Skipped by default. Run on-demand with `uv run pytest -m live`.
+3. Replay tests that serve the tools answers recorded from the real BioPortal API, so
+   they parse real responses rather than minimal ones. They run by default and need
+   neither the network nor a key. tests/record_bioportal_answers.py re-records them.
 """
 
 from __future__ import annotations
 
-import os
+import json
+from collections.abc import Iterator
+from pathlib import Path
 
 import httpx
 import pytest
@@ -994,20 +997,51 @@ class TestGetValueSetErrors:
 
 
 # ---------------------------------------------------------------------------
-# Live tests — opt-in
+# Replay tests
 #
-# Run with:    uv run pytest -m live
-# Requires:    BIOPORTAL_API_KEY set in the environment.
-# Purpose:     guard against BioPortal silently changing their response shape.
+# These tests serve the tools answers recorded from the real BioPortal API on
+# 2026-11-11, stored one file per request under tests/fixtures/bioportal/. They need
+# neither the network nor a key. Purpose: hold the tools to BioPortal's actual response
+# shape rather than to the minimal responses the mocked tests write by hand. Each answer
+# is stored as BioPortal sent it, except the ontology catalog, which keeps every entry but
+# only the fields server.py reads from each, as its `trimmed` field says.
+#
+# Re-record the answers from the repository root, with a key in the environment:
+#
+#     BIOPORTAL_API_KEY=<your-key> uv run python tests/record_bioportal_answers.py
+#
+# The script makes the same tool calls these tests make and never stores the key. It
+# writes the recording date into each file's `recorded_on`. Update the date above to
+# match. A replay test that fails after re-recording shows that BioPortal changed its
+# answer. A request with no recording fails the test, so a new or changed call here
+# needs a matching entry in the script's RECORDED_CALLS and a new recording.
 # ---------------------------------------------------------------------------
 
 
-@pytest.mark.live
-class TestGetOntologyLive:
-    def test_doid_resolves(self):
-        if not os.environ.get("BIOPORTAL_API_KEY"):
-            pytest.skip("BIOPORTAL_API_KEY not set; skipping live test.")
+RECORDED_ANSWERS = Path(__file__).parent / "fixtures" / "bioportal"
 
+
+@pytest.fixture
+def recorded_bioportal(api_key: None) -> Iterator[respx.MockRouter]:
+    """Serves every recorded BioPortal answer; any other request fails the test."""
+    with respx.mock(assert_all_mocked=True, assert_all_called=False) as router:
+        for path in sorted(RECORDED_ANSWERS.glob("*.json")):
+            recording = json.loads(path.read_text(encoding="utf-8"))
+            url = httpx.URL(recording["request"]["url"])
+            router.request(
+                recording["request"]["method"],
+                url.copy_with(query=None),
+                params__eq=url.params,
+            ).mock(
+                return_value=Response(
+                    recording["response"]["status"], json=recording["response"]["body"]
+                )
+            )
+        yield router
+
+
+class TestGetOntology:
+    def test_doid_resolves(self, recorded_bioportal: respx.MockRouter):
         result = get_ontology("DOID")
 
         assert result.acronym == "DOID"
@@ -1015,12 +1049,8 @@ class TestGetOntologyLive:
         assert result.ontology_iri.startswith("https://data.bioontology.org/ontologies/")
 
 
-@pytest.mark.live
-class TestGetClassLive:
-    def test_doid_disease_class_resolves(self):
-        if not os.environ.get("BIOPORTAL_API_KEY"):
-            pytest.skip("BIOPORTAL_API_KEY not set; skipping live test.")
-
+class TestGetClass:
+    def test_doid_disease_class_resolves(self, recorded_bioportal: respx.MockRouter):
         result = get_class("http://purl.obolibrary.org/obo/DOID_4", "DOID")
 
         assert result.class_iri == "http://purl.obolibrary.org/obo/DOID_4"
@@ -1031,12 +1061,8 @@ class TestGetClassLive:
         assert result.label
 
 
-@pytest.mark.live
-class TestGetValueSetLive:
-    def test_hravs_area_unit_resolves(self):
-        if not os.environ.get("BIOPORTAL_API_KEY"):
-            pytest.skip("BIOPORTAL_API_KEY not set; skipping live test.")
-
+class TestGetValueSet:
+    def test_hravs_area_unit_resolves(self, recorded_bioportal: respx.MockRouter):
         result = get_value_set(
             "https://purl.humanatlas.io/vocab/hravs#HRAVS_1000161", "HRAVS"
         )
@@ -1046,12 +1072,8 @@ class TestGetValueSetLive:
         assert result.name  # whatever BioPortal returns, it should be non-empty
 
 
-@pytest.mark.live
-class TestFindOntologyLive:
-    def test_finds_doid_by_substring(self):
-        if not os.environ.get("BIOPORTAL_API_KEY"):
-            pytest.skip("BIOPORTAL_API_KEY not set; skipping live test.")
-
+class TestFindOntology:
+    def test_finds_doid_by_substring(self, recorded_bioportal: respx.MockRouter):
         results = find_ontology("human disease", max_results=10)
 
         assert len(results) > 0
@@ -1059,10 +1081,7 @@ class TestFindOntologyLive:
         acronyms = [r.acronym for r in results]
         assert "DOID" in acronyms
 
-    def test_exact_acronym_ranks_first(self):
-        if not os.environ.get("BIOPORTAL_API_KEY"):
-            pytest.skip("BIOPORTAL_API_KEY not set; skipping live test.")
-
+    def test_exact_acronym_ranks_first(self, recorded_bioportal: respx.MockRouter):
         results = find_ontology("NCIT", max_results=10)
 
         assert len(results) > 0
@@ -1070,12 +1089,10 @@ class TestFindOntologyLive:
         assert results[0].acronym == "NCIT"
 
 
-@pytest.mark.live
-class TestFindValueSetLive:
-    def test_search_hravs_for_area_unit_finds_known_value_set(self):
-        if not os.environ.get("BIOPORTAL_API_KEY"):
-            pytest.skip("BIOPORTAL_API_KEY not set; skipping live test.")
-
+class TestFindValueSet:
+    def test_search_hravs_for_area_unit_finds_known_value_set(
+        self, recorded_bioportal: respx.MockRouter
+    ):
         results = find_value_set("area unit", vs_collection="HRAVS", max_results=10)
 
         assert len(results) > 0
@@ -1086,12 +1103,10 @@ class TestFindValueSetLive:
         assert any("HRAVS_1000161" in iri for iri in iris)
 
 
-@pytest.mark.live
-class TestFindClassLive:
-    def test_search_for_disease_in_doid_finds_doid_4(self):
-        if not os.environ.get("BIOPORTAL_API_KEY"):
-            pytest.skip("BIOPORTAL_API_KEY not set; skipping live test.")
-
+class TestFindClass:
+    def test_search_for_disease_in_doid_finds_doid_4(
+        self, recorded_bioportal: respx.MockRouter
+    ):
         results = find_class("disease", ontology_acronym="DOID", max_results=10)
 
         # Sanity checks: should get some results, all should carry DOID acronym.
@@ -1101,10 +1116,9 @@ class TestFindClassLive:
         iris = [hit.class_iri for hit in results]
         assert "http://purl.obolibrary.org/obo/DOID_4" in iris
 
-    def test_unscoped_search_returns_hits_from_multiple_ontologies(self):
-        if not os.environ.get("BIOPORTAL_API_KEY"):
-            pytest.skip("BIOPORTAL_API_KEY not set; skipping live test.")
-
+    def test_unscoped_search_returns_hits_from_multiple_ontologies(
+        self, recorded_bioportal: respx.MockRouter
+    ):
         results = find_class("melanoma", max_results=20)
 
         assert len(results) > 0
