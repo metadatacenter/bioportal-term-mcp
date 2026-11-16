@@ -88,6 +88,19 @@ def api_key(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("BIOPORTAL_API_KEY", "test-fake-key")
 
 
+@pytest.fixture
+def no_network() -> Iterator[None]:
+    """Answers every HTTP request, and fails the test if one was made.
+
+    A tool that must refuse its arguments before calling BioPortal could otherwise send a real request
+    and pass, if it tolerated that request's failure.
+    """
+    with respx.mock(assert_all_called=False) as router:
+        any_request = router.route().mock(return_value=Response(500))
+        yield
+        assert not any_request.called, f"the tool sent {any_request.call_count} request(s) to BioPortal"
+
+
 class TestGetOntologyHappyPath:
     @respx.mock
     def test_returns_canonical_tuple(self, api_key: None):
@@ -150,13 +163,13 @@ class TestGetOntologyHappyPath:
         assert result.acronym == "DOID"
 
 
+@pytest.mark.usefixtures("no_network")
 class TestGetOntologyValidation:
     @pytest.mark.parametrize("bad", ["", "   ", "\t"])
     def test_rejects_empty_acronym_before_any_network_call(
         self, api_key: None, bad: str
     ):
-        # No respx routes mocked — if we reached the network, the test would error
-        # with a respx "no route" exception, surfacing the bug.
+        # no_network answers any request and fails the test if one was made.
         with pytest.raises(ValueError, match="acronym must be a non-empty"):
             get_ontology(bad)
 
@@ -184,6 +197,7 @@ class TestGetOntologyErrors:
 
         assert exc_info.value.response.status_code == 503
 
+    @pytest.mark.usefixtures("no_network")
     def test_missing_api_key_raises_runtime_error(
         self, monkeypatch: pytest.MonkeyPatch
     ):
@@ -193,6 +207,7 @@ class TestGetOntologyErrors:
         with pytest.raises(RuntimeError, match="BIOPORTAL_API_KEY"):
             get_ontology("DOID")
 
+    @pytest.mark.usefixtures("no_network")
     def test_blank_api_key_raises_runtime_error(
         self, monkeypatch: pytest.MonkeyPatch
     ):
@@ -345,6 +360,7 @@ class TestGetClassHappyPath:
         assert result.label == "disease (string-form)"
 
 
+@pytest.mark.usefixtures("no_network")
 class TestGetClassValidation:
     @pytest.mark.parametrize("bad", ["", "   ", "\t"])
     def test_rejects_empty_class_iri(self, api_key: None, bad: str):
@@ -584,6 +600,7 @@ class TestFindOntologyHappyPath:
         assert all(r.acronym for r in results)
 
 
+@pytest.mark.usefixtures("no_network")
 class TestFindOntologyValidation:
     @pytest.mark.parametrize("bad", ["", "   ", "\t"])
     def test_rejects_empty_query(self, api_key: None, bad: str):
@@ -763,6 +780,7 @@ class TestFindClassHappyPath:
         assert results == []
 
 
+@pytest.mark.usefixtures("no_network")
 class TestFindClassValidation:
     @pytest.mark.parametrize("bad", ["", "   ", "\t"])
     def test_rejects_empty_query(self, api_key: None, bad: str):
@@ -895,6 +913,7 @@ class TestFindValueSetHappyPath:
         assert results[0].vs_collection == "HRAVS"
 
 
+@pytest.mark.usefixtures("no_network")
 class TestFindValueSetValidation:
     @pytest.mark.parametrize("bad", ["", "   ", "\t"])
     def test_rejects_empty_query(self, api_key: None, bad: str):
@@ -971,6 +990,7 @@ class TestGetValueSetHappyPath:
         assert route.called
 
 
+@pytest.mark.usefixtures("no_network")
 class TestGetValueSetValidation:
     @pytest.mark.parametrize("bad", ["", "   ", "\t"])
     def test_rejects_empty_value_set_iri(self, api_key: None, bad: str):
