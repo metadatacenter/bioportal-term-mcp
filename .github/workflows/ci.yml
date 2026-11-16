@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: pytest (Python 3.14)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      # uv installs the Python that .python-version names and the locked dependencies.
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v10.3.3
+        with:
+          enable-cache: true
+
+      # The tests replay recorded BioPortal answers and mock every other request, so no API key is
+      # needed and nothing reaches BioPortal. --frozen fails the run if uv.lock no longer matches
+      # pyproject.toml rather than resolving afresh.
+      - name: Run the tests
+        run: uv run --frozen pytest --junitxml=reports/pytest.xml
+
+      - name: Keep the test report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: pytest-report
+          path: reports/
+          if-no-files-found: warn
