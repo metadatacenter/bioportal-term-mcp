@@ -18,6 +18,8 @@ from __future__ import annotations
 
 import os
 import urllib.parse
+from collections.abc import Mapping
+from importlib.metadata import PackageNotFoundError, version
 
 import httpx
 from mcp.server.fastmcp import FastMCP
@@ -39,12 +41,13 @@ def _api_key() -> str:
     return key
 
 
-def _bioportal_get(path: str, params: dict[str, str] | None = None) -> dict | list:
-    """Authenticated GET against the BioPortal REST API.
+# A JSON object as BioPortal returns it. Its values are read through the guards below, which
+# check each value's shape before use.
+JsonObject = Mapping[str, object]
 
-    Most BioPortal endpoints return a JSON object; the `/ontologies` listing endpoint
-    returns a JSON array, hence the union return type. Callers are responsible for
-    knowing which shape to expect for the path they invoke.
+
+def _bioportal_get(path: str, params: dict[str, str] | None = None) -> object:
+    """Authenticated GET against the BioPortal REST API, returning the decoded JSON body.
 
     Follows 3xx redirects so a benign restructure on the BioPortal side doesn't surface
     as a tool error. Raises httpx.HTTPStatusError on non-2xx final responses; FastMCP
@@ -56,6 +59,51 @@ def _bioportal_get(path: str, params: dict[str, str] | None = None) -> dict | li
         response = client.get(url, headers=headers, params=params or {})
         response.raise_for_status()
         return response.json()
+
+
+def _bioportal_get_object(path: str, params: dict[str, str] | None = None) -> JsonObject:
+    """GET a BioPortal endpoint that answers with a JSON object, as most do."""
+    payload = _bioportal_get(path, params)
+    if not isinstance(payload, dict):
+        raise ValueError(
+            f"BioPortal answered {path} with a JSON {type(payload).__name__}; expected an object."
+        )
+    return payload
+
+
+def _bioportal_get_array(path: str, params: dict[str, str] | None = None) -> list[object]:
+    """GET a BioPortal endpoint that answers with a JSON array, such as `/ontologies`."""
+    payload = _bioportal_get(path, params)
+    if not isinstance(payload, list):
+        raise ValueError(
+            f"BioPortal answered {path} with a JSON {type(payload).__name__}; expected an array."
+        )
+    return payload
+
+
+def _optional_string(obj: JsonObject, key: str) -> str | None:
+    """The value at `key` when it is a non-empty string, otherwise None."""
+    value = obj.get(key)
+    return value if isinstance(value, str) and value else None
+
+
+def _required_string(obj: JsonObject, key: str, what: str) -> str:
+    """The string at `key`. Raises when it is absent or not a string, naming `what` was read."""
+    value = obj.get(key)
+    if not isinstance(value, str):
+        raise ValueError(f"BioPortal's {what} carries no string '{key}'; got {value!r}.")
+    return value
+
+
+def _nested_object(obj: JsonObject, key: str) -> JsonObject:
+    """The object at `key`, or an empty object when it is absent or not an object."""
+    value = obj.get(key)
+    return value if isinstance(value, dict) else {}
+
+
+def _objects(items: list[object]) -> list[JsonObject]:
+    """The items that are JSON objects."""
+    return [item for item in items if isinstance(item, dict)]
 
 
 def _require_nonblank(value: str, field_name: str) -> str:
@@ -75,8 +123,6 @@ def _server_version() -> str:
     """Reads the installed package version, falling back to "unknown" when the package metadata
     is unavailable (e.g. running from a source tree that was never installed)."""
     try:
-        from importlib.metadata import PackageNotFoundError, version
-
         return version(SERVER_NAME)
     except PackageNotFoundError:
         return "unknown"
@@ -122,12 +168,11 @@ def get_ontology(acronym: str) -> OntologyTuple:
     Raises an error if the acronym is empty, unknown, or BioPortal is unreachable.
     """
     acronym = _require_nonblank(acronym, "acronym")
-    payload = _bioportal_get(f"/ontologies/{acronym}")
-    assert isinstance(payload, dict)
+    payload = _bioportal_get_object(f"/ontologies/{acronym}")
     return OntologyTuple(
-        acronym=payload["acronym"],
-        name=payload["name"],
-        ontology_iri=payload["@id"],
+        acronym=_required_string(payload, "acronym", "ontology"),
+        name=_required_string(payload, "name", "ontology"),
+        ontology_iri=_required_string(payload, "@id", "ontology"),
     )
 
 
@@ -187,13 +232,12 @@ def find_ontology(query: str, max_results: int = 20) -> list[OntologyTuple]:
     query_lower = query.lower()
     capped_max = max(1, min(max_results, _MAX_SEARCH_RESULTS))
 
-    payload = _bioportal_get("/ontologies")
-    assert isinstance(payload, list)
+    payload = _bioportal_get_array("/ontologies")
 
     candidates: list[OntologyTuple] = []
-    for entry in payload:
-        acronym = entry.get("acronym", "")
-        name = entry.get("name", "")
+    for entry in _objects(payload):
+        acronym = _optional_string(entry, "acronym") or ""
+        name = _optional_string(entry, "name") or ""
         if not acronym and not name:
             continue
         if query_lower in acronym.lower() or query_lower in name.lower():
@@ -201,7 +245,7 @@ def find_ontology(query: str, max_results: int = 20) -> list[OntologyTuple]:
                 OntologyTuple(
                     acronym=acronym,
                     name=name,
-                    ontology_iri=entry.get("@id", ""),
+                    ontology_iri=_optional_string(entry, "@id") or "",
                 )
             )
 
@@ -263,18 +307,19 @@ def get_class(class_iri: str, ontology_acronym: str) -> ClassTuple:
     # BioPortal class endpoint: /ontologies/{acronym}/classes/{double-url-encoded-iri}.
     # `safe=''` forces encoding of `:` and `/` which are normally path delimiters.
     encoded_iri = urllib.parse.quote(class_iri, safe="")
-    class_payload = _bioportal_get(f"/ontologies/{ontology_acronym}/classes/{encoded_iri}")
-    ontology_payload = _bioportal_get(f"/ontologies/{ontology_acronym}")
+    class_payload = _bioportal_get_object(f"/ontologies/{ontology_acronym}/classes/{encoded_iri}")
+    ontology_payload = _bioportal_get_object(f"/ontologies/{ontology_acronym}")
 
-    pref_label = class_payload.get("prefLabel") or class_payload["@id"]
+    found_iri = _required_string(class_payload, "@id", "class")
+    pref_label = _optional_string(class_payload, "prefLabel") or found_iri
     label = _first_label_string(class_payload.get("label")) or pref_label
 
     return ClassTuple(
-        class_iri=class_payload["@id"],
+        class_iri=found_iri,
         pref_label=pref_label,
         label=label,
-        ontology_acronym=ontology_payload["acronym"],
-        ontology_name=ontology_payload["name"],
+        ontology_acronym=_required_string(ontology_payload, "acronym", "ontology"),
+        ontology_name=_required_string(ontology_payload, "name", "ontology"),
     )
 
 
@@ -328,6 +373,22 @@ def _extract_acronym_from_ontology_link(link: str) -> str:
     return link.rstrip("/").rsplit("/", 1)[-1]
 
 
+def _search_hits(payload: JsonObject) -> list[JsonObject]:
+    """The hits of a `/search` answer: the objects in its `collection` array."""
+    collection = payload.get("collection")
+    return _objects(collection) if isinstance(collection, list) else []
+
+
+def _hit_ontology_acronym(entry: JsonObject) -> str:
+    """The acronym of a search hit's ontology, from the inlined `ontology` object when it has
+    one and from the `links.ontology` URL otherwise."""
+    return _optional_string(_nested_object(entry, "ontology"), "acronym") or (
+        _extract_acronym_from_ontology_link(
+            _optional_string(_nested_object(entry, "links"), "ontology") or ""
+        )
+    )
+
+
 @mcp.tool()
 def find_class(
     query: str,
@@ -357,27 +418,26 @@ def find_class(
         # Only validate when actually provided; absent (None) means "search all ontologies".
         params["ontologies"] = _require_nonblank(ontology_acronym, "ontology_acronym")
 
-    payload = _bioportal_get("/search", params=params)
+    payload = _bioportal_get_object("/search", params=params)
 
     hits: list[ClassSearchHit] = []
-    for entry in payload.get("collection", []):
+    for entry in _search_hits(payload):
         # BioPortal sometimes inlines ontology metadata as an `ontology` object;
         # sometimes only as a `links.ontology` URL. Handle both.
-        ontology_meta = entry.get("ontology") or {}
-        acronym = ontology_meta.get("acronym") or _extract_acronym_from_ontology_link(
-            entry.get("links", {}).get("ontology", "")
-        )
+        ontology_meta = _nested_object(entry, "ontology")
+        acronym = _hit_ontology_acronym(entry)
 
-        pref_label = entry.get("prefLabel") or entry.get("@id", "")
+        class_iri = _required_string(entry, "@id", "search hit")
+        pref_label = _optional_string(entry, "prefLabel") or class_iri
         label = _first_label_string(entry.get("label")) or pref_label
 
         hits.append(
             ClassSearchHit(
-                class_iri=entry["@id"],
+                class_iri=class_iri,
                 pref_label=pref_label,
                 label=label,
                 ontology_acronym=acronym,
-                ontology_name=ontology_meta.get("name"),
+                ontology_name=_optional_string(ontology_meta, "name"),
             )
         )
 
@@ -419,12 +479,13 @@ def get_value_set(value_set_iri: str, vs_collection: str) -> ValueSetTuple:
 
     # Value sets are classes within the vs-collection ontology in BioPortal's URL space.
     encoded_iri = urllib.parse.quote(value_set_iri, safe="")
-    payload = _bioportal_get(f"/ontologies/{vs_collection}/classes/{encoded_iri}")
+    payload = _bioportal_get_object(f"/ontologies/{vs_collection}/classes/{encoded_iri}")
 
-    name = payload.get("prefLabel") or payload["@id"]
+    found_iri = _required_string(payload, "@id", "value set")
+    name = _optional_string(payload, "prefLabel") or found_iri
 
     return ValueSetTuple(
-        value_set_iri=payload["@id"],
+        value_set_iri=found_iri,
         vs_collection=vs_collection,
         name=name,
     )
@@ -470,21 +531,16 @@ def find_value_set(
         "ontologies": vs_collection,
         "pagesize": str(capped_max),
     }
-    payload = _bioportal_get("/search", params=params)
-    assert isinstance(payload, dict)
+    payload = _bioportal_get_object("/search", params=params)
 
     hits: list[ValueSetTuple] = []
-    for entry in payload.get("collection", []):
-        ontology_meta = entry.get("ontology") or {}
-        acronym = ontology_meta.get("acronym") or _extract_acronym_from_ontology_link(
-            entry.get("links", {}).get("ontology", "")
-        )
-        name = entry.get("prefLabel") or entry.get("@id", "")
+    for entry in _search_hits(payload):
+        value_set_iri = _required_string(entry, "@id", "search hit")
         hits.append(
             ValueSetTuple(
-                value_set_iri=entry["@id"],
-                vs_collection=acronym,
-                name=name,
+                value_set_iri=value_set_iri,
+                vs_collection=_hit_ontology_acronym(entry),
+                name=_optional_string(entry, "prefLabel") or value_set_iri,
             )
         )
 

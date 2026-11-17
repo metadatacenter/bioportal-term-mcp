@@ -18,7 +18,7 @@ concurrency:
 
 jobs:
   test:
-    name: pytest (Python 3.14)
+    name: pyright and pytest (Python 3.14)
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -32,9 +32,13 @@ jobs:
         with:
           enable-cache: true
 
+      # pyright checks the package and the tests. --frozen fails the run if uv.lock no longer
+      # matches pyproject.toml rather than resolving afresh.
+      - name: Check the types
+        run: uv run --frozen pyright
+
       # The tests replay recorded BioPortal answers and mock every other request, so no API key is
-      # needed and nothing reaches BioPortal. --frozen fails the run if uv.lock no longer matches
-      # pyproject.toml rather than resolving afresh.
+      # needed and nothing reaches BioPortal.
       - name: Run the tests
         run: uv run --frozen pytest --junitxml=reports/pytest.xml
 

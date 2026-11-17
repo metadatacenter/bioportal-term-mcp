@@ -197,6 +197,27 @@ class TestGetOntologyErrors:
 
         assert exc_info.value.response.status_code == 503
 
+    @respx.mock
+    def test_an_array_in_place_of_the_ontology_is_refused(self, api_key: None):
+        respx.get("https://data.bioontology.org/ontologies/DOID").mock(
+            return_value=Response(200, json=[])
+        )
+
+        with pytest.raises(ValueError, match="answered /ontologies/DOID with a JSON list; expected an object"):
+            get_ontology("DOID")
+
+    @respx.mock
+    def test_a_name_that_is_not_a_string_is_refused(self, api_key: None):
+        respx.get("https://data.bioontology.org/ontologies/DOID").mock(
+            return_value=Response(
+                200,
+                json={"@id": "https://data.bioontology.org/ontologies/DOID", "acronym": "DOID", "name": 7},
+            )
+        )
+
+        with pytest.raises(ValueError, match="ontology carries no string 'name'; got 7"):
+            get_ontology("DOID")
+
     @pytest.mark.usefixtures("no_network")
     def test_missing_api_key_raises_runtime_error(
         self, monkeypatch: pytest.MonkeyPatch
@@ -620,6 +641,34 @@ class TestFindOntologyErrors:
 
         assert exc_info.value.response.status_code == 503
 
+    @respx.mock
+    def test_an_object_in_place_of_the_catalog_is_refused(self, api_key: None):
+        respx.get("https://data.bioontology.org/ontologies").mock(
+            return_value=Response(200, json={"collection": []})
+        )
+
+        with pytest.raises(ValueError, match="answered /ontologies with a JSON dict; expected an array"):
+            find_ontology("disease")
+
+    @respx.mock
+    def test_catalog_entries_of_another_shape_are_skipped(self, api_key: None):
+        respx.get("https://data.bioontology.org/ontologies").mock(
+            return_value=Response(
+                200,
+                json=[
+                    "DOID",
+                    {"acronym": None, "name": ["Disease"]},
+                    {
+                        "@id": "https://data.bioontology.org/ontologies/DOID",
+                        "acronym": "DOID",
+                        "name": "Human Disease Ontology",
+                    },
+                ],
+            )
+        )
+
+        assert [hit.acronym for hit in find_ontology("disease")] == ["DOID"]
+
 
 # ---------------------------------------------------------------------------
 # find_class — mocked HTTP
@@ -806,6 +855,23 @@ class TestFindClassErrors:
             find_class("disease")
 
         assert exc_info.value.response.status_code == 503
+
+    @respx.mock
+    def test_a_hit_without_an_iri_is_refused(self, api_key: None):
+        respx.get("https://data.bioontology.org/search").mock(
+            return_value=Response(200, json={"collection": [{"prefLabel": "disease"}]})
+        )
+
+        with pytest.raises(ValueError, match="search hit carries no string '@id'; got None"):
+            find_class("disease")
+
+    @respx.mock
+    def test_a_collection_that_is_not_an_array_yields_no_hits(self, api_key: None):
+        respx.get("https://data.bioontology.org/search").mock(
+            return_value=Response(200, json={"collection": {"@id": "x"}})
+        )
+
+        assert find_class("disease") == []
 
 
 # ---------------------------------------------------------------------------
